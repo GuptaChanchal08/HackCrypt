@@ -1,0 +1,714 @@
+<style>
+    /* Dashboard Page Styles */
+
+/* Dashboard Container */
+.dashboard-container {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Welcome Header */
+h2 {
+    color: #2c3e50;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Welcome Message */
+p.lead {
+    color: #6c757d;
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+    border-radius: 12px;
+    border-left: 4px solid #667eea;
+}
+
+p.lead strong {
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+/* Section Headers */
+h4 {
+    color: #2d3748;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.75rem;
+    font-size: 1.3rem;
+}
+
+h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 2px;
+}
+
+/* Skills Section */
+.skills-container {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.skills-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Skills List */
+.list-group {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.25rem 1.5rem;
+    background: #f8fafc;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.list-group-item:hover {
+    background: white;
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item .skill-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1.05rem;
+}
+
+/* Skill Badges */
+.badge {
+    padding: 0.6rem 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    min-width: 70px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.badge.bg-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.badge.bg-primary::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Skill Levels Color Coding */
+.badge.skill-level-1 { background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%) !important; color: #c53030; }
+.badge.skill-level-2 { background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%) !important; color: #b7791f; }
+.badge.skill-level-3 { background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%) !important; color: #276749; }
+.badge.skill-level-4 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white; }
+
+/* No Skills Message */
+.text-muted {
+    color: #a0aec0 !important;
+    font-style: italic;
+    padding: 2rem;
+    text-align: center;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #e2e8f0;
+}
+
+/* Action Buttons */
+.btn {
+    padding: 0.85rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-primary {
+    border: 2px solid #667eea;
+    color: #667eea;
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: transparent;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-outline-secondary {
+    border: 2px solid #cbd5e0;
+    color: #718096;
+    background: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+    border-color: transparent;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(113, 128, 150, 0.3);
+}
+
+/* Badges Section */
+.badges-container {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.badges-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Badge Cards */
+.badge-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 0.75rem;
+    display: inline-block;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    min-width: 160px;
+    max-width: 180px;
+    vertical-align: top;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.badge-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    border-color: #667eea;
+}
+
+.badge-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.badge-card:hover::before {
+    transform: scaleX(1);
+}
+
+.badge-card i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+}
+
+.badge-card strong {
+    color: #2d3748;
+    font-weight: 700;
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.badge-card small {
+    color: #718096;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* Badge Categories */
+.badge-card.gold {
+    border-color: #f6ad55;
+    background: linear-gradient(135deg, #fed7d710 0%, #fbd38d10 100%);
+}
+
+.badge-card.silver {
+    border-color: #cbd5e0;
+    background: linear-gradient(135deg, #edf2f710 0%, #e2e8f010 100%);
+}
+
+.badge-card.bronze {
+    border-color: #ed8936;
+    background: linear-gradient(135deg, #feebc810 0%, #fbd38d10 100%);
+}
+
+/* Teacher Section */
+.teacher-actions {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-left: 5px solid #667eea;
+}
+
+.teacher-actions h5 {
+    color: #2d3748;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+    border: none;
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(56, 161, 105, 0.3);
+    background-size: 200% 100%;
+    animation: gradientShift 2s ease infinite;
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+    border: none;
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(237, 137, 54, 0.3);
+    background-size: 200% 100%;
+    animation: gradientShift 2s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Divider */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+    margin: 2.5rem 0;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .row {
+        flex-direction: column;
+    }
+    
+    .col-md-6 {
+        width: 100%;
+        margin-bottom: 2.5rem;
+    }
+    
+    .skills-container,
+    .badges-container {
+        padding: 1.5rem;
+    }
+    
+    .badge-card {
+        min-width: 140px;
+        margin: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    h4 {
+        font-size: 1.2rem;
+    }
+    
+    .list-group-item {
+        padding: 1rem;
+    }
+    
+    .badge-card {
+        min-width: 120px;
+        padding: 1rem;
+        margin: 0.25rem;
+    }
+    
+    .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Loading Animation */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Stats Cards */
+.stats-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.stats-card .number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card .label {
+    color: #718096;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Achievement Animation */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.badge-card.new {
+    animation: bounce 0.5s ease 3;
+    border-color: #667eea;
+    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+}
+</style>
+{% extends "layout.html" %}
+{% block title %}Dashboard — Study Game{% endblock %}
+{% block content %}
+<div class="dashboard-container">
+    
+    <!-- Welcome Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Dashboard</h2>
+            <p class="lead mb-0">
+                Welcome, <strong>{{ user['username'] }}</strong> — 
+                <span class="user-type-badge badge {% if user['is_teacher'] %}bg-warning{% else %}bg-info{% endif %}">
+                    {{ 'Teacher' if user['is_teacher'] else 'Student' }}
+                </span>
+            </p>
+        </div>
+        <div class="stats-card">
+            <div class="number">{{ badges|length }}</div>
+            <div class="label">Badges</div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-card">
+                <div class="number">{{ perfs|length }}</div>
+                <div class="label">Skills Tracked</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-card">
+                <div class="number">{{ '%.1f' % (perfs|map(attribute='skill')|max|default(0)) }}</div>
+                <div class="label">Top Skill</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-card">
+                <div class="number">{{ '%.1f' % (perfs|map(attribute='skill')|sum / perfs|length if perfs else 0) }}</div>
+                <div class="label">Avg. Skill</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="stats-card">
+                <div class="number">{{ perfs|selectattr('skill', '>=', 8)|list|length }}</div>
+                <div class="label">Mastered</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        
+        <!-- Skills Column -->
+        {% set skill_progress = p['skill'] * 10%}
+        <div class="col-md-6">
+            <div class="skills-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">Your Skills</h4>
+                    <span class="badge bg-secondary">{{ perfs|length }}</span>
+                </div>
+                
+                {% if perfs %}
+                    <div class="list-group">
+                        {% for p in perfs %}
+                            <li class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="skill-name">{{ p['name'] }}</div>
+                                        <div class="progress mt-2" style="height: 6px; width: 150px;">
+                                            <div class="progress-bar" 
+                                                 role="progressbar" 
+                                                 style="width: skill_progress ; 
+                                                        background: linear-gradient(90deg, #667eea, #764ba2);"
+                                                 aria-valuenow="{{ skill_progress }}" 
+                                                 aria-valuemin="0" 
+                                                 aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill skill-level-{{ ((p['skill'] // 2.5)|int) + 1 }}">
+                                        {{ '%.1f' % p['skill'] }}
+                                    </span>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-4">
+                        <a class="btn btn-outline-primary" href="{{ url_for('leaderboard') }}">
+                            <i class="bi bi-trophy me-2"></i>View Leaderboard
+                        </a>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('recommendations') }}">
+                            <i class="bi bi-lightbulb me-2"></i>Recommendations
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-graph-up text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="text-muted mt-3">No skill data yet. Take a quiz to get started!</p>
+                        <a class="btn btn-primary mt-2" href="{{ url_for('index') }}">
+                            <i class="bi bi-play-circle me-2"></i>Start a Quiz
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Badges Column -->
+        <div class="col-md-6">
+            <div class="badges-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">Your Badges</h4>
+                    <span class="badge bg-secondary">{{ badges|length }}</span>
+                </div>
+                
+                {% if badges %}
+                    <div class="text-center">
+                        {% for b in badges %}
+                            <div class="badge-card {{ 'gold' if loop.index <= 2 else 'silver' if loop.index <= 5 else 'bronze' }}">
+                                <i class="bi bi-award"></i>
+                                <strong>{{ b['name'] }}</strong>
+                                <small>{{ b['code'] }}</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <!-- Badge Progress -->
+                    {% set progress = badges|length * 10 %}
+                    <div class="mt-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <small>Collection Progress</small>
+                            <small>{{ progress }}%</small>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar" 
+                                 role="progressbar" 
+                                 style="width: progress; background: linear-gradient(90deg, #667eea, #764ba2);"
+                    aria-valuenow="{{ progress }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-award text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p class="text-muted mt-3">No badges yet — complete a quiz to earn them!</p>
+                        <a class="btn btn-primary mt-2" href="{{ url_for('index') }}">
+                            <i class="bi bi-trophy me-2"></i>Earn Badges
+                        </a>
+                    </div>
+                {% endif %}
+
+                <hr class="my-4"/>
+                
+                <!-- Teacher Actions -->
+                {% if user['is_teacher'] %}
+                    <div class="teacher-actions">
+                        <h5><i class="bi bi-person-badge me-2"></i>Teacher Tools</h5>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a class="btn btn-success" href="{{ url_for('add_question') }}">
+                                <i class="bi bi-plus-circle me-2"></i>Add Question
+                            </a>
+                            <a class="btn btn-warning" href="{{ url_for('analytics') }}">
+                                <i class="bi bi-bar-chart me-2"></i>Class Analytics
+                            </a>
+                            <a class="btn btn-info" href="#">
+                                <i class="bi bi-people me-2"></i>Manage Students
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Student Actions -->
+                {% if not user['is_teacher'] %}
+                    <div class="text-center">
+                        <h5 class="mb-3">Ready to learn?</h5>
+                        <a class="btn btn-primary btn-lg" href="{{ url_for('index') }}">
+                            <i class="bi bi-joystick me-2"></i>Start Studying
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    {% if perfs %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="skills-container">
+                <h4>Recent Progress</h4>
+                <div class="row">
+                    {% for p in perfs[:3] %}
+                        <div class="col-md-4 mb-3">
+                            <div class="stats-card">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: #667eea;"></i>
+                                    </div>
+                                    <div>
+                                        <div class="number">{{ '%.1f' % p['skill'] }}</div>
+                                        <div class="label">{{ p['name'] }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Add bounce animation for new badges
+    document.addEventListener('DOMContentLoaded', function() {
+        const badges = document.querySelectorAll('.badge-card');
+        badges.forEach((badge, index) => {
+            // Simulate new badge animation (in real app, check timestamp)
+            if (index < 2) { // First two badges as "new"
+                badge.classList.add('new');
+            }
+        });
+        
+        // Update skill level colors dynamically
+        document.querySelectorAll('.list-group-item .badge').forEach(badge => {
+            const score = parseFloat(badge.textContent);
+            const level = Math.min(4, Math.floor(score / 2.5) + 1);
+            badge.classList.add(`skill-level-${level}`);
+        });
+    });
+</script>
+{% endblock %}

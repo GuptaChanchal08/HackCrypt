@@ -1,28 +1,659 @@
-{% extends "layout.html" %}
+<style>
+  /* Registration Page Styles */
+
+/* Full Page Background for Auth Pages */
+body.auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding: 20px;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated Background Elements */
+body.auth-page::before,
+body.auth-page::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1;
+}
+
+body.auth-page::before {
+    width: 300px;
+    height: 300px;
+    top: -150px;
+    right: -150px;
+    animation: float 20s infinite ease-in-out;
+}
+
+body.auth-page::after {
+    width: 200px;
+    height: 200px;
+    bottom: -100px;
+    left: -100px;
+    animation: float 25s infinite ease-in-out reverse;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    33% {
+        transform: translate(30px, 50px) rotate(120deg);
+    }
+    66% {
+        transform: translate(-20px, 30px) rotate(240deg);
+    }
+}
+
+/* Registration Container */
+.row.justify-content-center {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 2;
+}
+
+/* Registration Card */
+.col-md-6 {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.col-md-6::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(to right, #667eea, #764ba2, #f093fb);
+    background-size: 300% 100%;
+    animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Header */
+h2 {
+    color: #2c3e50;
+    font-weight: 800;
+    margin-bottom: 2.5rem;
+    text-align: center;
+    position: relative;
+    padding-bottom: 1.5rem;
+    font-size: 2.2rem;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 5px;
+    background: linear-gradient(to right, #667eea, #764ba2);
+    border-radius: 3px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { width: 80px; }
+    50% { width: 100px; }
+}
+
+/* Form Elements */
+form {
+    margin-top: 2rem;
+}
+
+.mb-3 {
+    margin-bottom: 1.75rem !important;
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    background: #f8fafc;
+    color: #2d3748;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+    transform: translateY(-1px);
+}
+
+.form-control:hover:not(:focus) {
+    border-color: #cbd5e0;
+    background: white;
+}
+
+/* Password Input with Toggle */
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #a0aec0;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: #667eea;
+}
+
+/* Checkbox Styling */
+.form-check {
+    padding-left: 2.5rem;
+    margin: 2rem 0;
+}
+
+.form-check-input {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-left: -2.5rem;
+    margin-top: 0.2rem;
+    cursor: pointer;
+    border: 2px solid #cbd5e0;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    background-size: 200% 100%;
+    animation: gradientShift 2s ease infinite;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+}
+
+.form-check-label {
+    color: #2d3748;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: color 0.3s ease;
+}
+
+.form-check-label:hover {
+    color: #667eea;
+}
+
+/* Optional Field Indicator */
+.optional-label {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    font-weight: 400;
+    margin-left: 0.5rem;
+}
+
+/* Button Styling */
+.btn-primary {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    margin-top: 1rem;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+    background-size: 200% 100%;
+    animation: gradientShift 1.5s ease infinite;
+}
+
+.btn-primary:active {
+    transform: translateY(-1px);
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
+}
+
+/* Login Link */
+.login-link {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+    color: #718096;
+    font-size: 1rem;
+}
+
+.login-link a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.25rem 0.5rem;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #667eea;
+    transition: width 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #764ba2;
+}
+
+.login-link a:hover::after {
+    width: 100%;
+}
+
+/* Progress Indicator (for multi-step forms) */
+.registration-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    position: relative;
+}
+
+.registration-progress::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: #e2e8f0;
+    z-index: 1;
+}
+
+.progress-step {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #a0aec0;
+    position: relative;
+    z-index: 2;
+}
+
+.progress-step.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Animations */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body.auth-page {
+        padding: 15px;
+    }
+    
+    .col-md-6 {
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+    }
+    
+    .form-control {
+        padding: 0.9rem 1.15rem;
+    }
+    
+    .btn-primary {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .col-md-6 {
+        padding: 2rem 1.5rem;
+        border-radius: 16px;
+    }
+    
+    h2 {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-check {
+        padding-left: 2rem;
+    }
+    
+    .login-link {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+    }
+}
+
+/* Validation Styles */
+.is-invalid {
+    border-color: #f56565 !important;
+    background: linear-gradient(135deg, #fed7d715 0%, #feb2b215 100%) !important;
+}
+
+.is-valid {
+    border-color: #48bb78 !important;
+    background: linear-gradient(135deg, #c6f6d515 0%, #9ae6b415 100%) !important;
+}
+
+.invalid-feedback {
+    display: block;
+    margin-top: 0.5rem;
+    color: #f56565;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Focus Accessibility */
+.form-control:focus-visible,
+.form-check-input:focus-visible,
+.btn-primary:focus-visible {
+    outline: 2px solid #667eea;
+    outline-offset: 2px;
+}
+
+/* Teacher-specific styling */
+.teacher-section {
+    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-left: 4px solid #667eea;
+    transition: all 0.3s ease;
+}
+
+.teacher-section:hover {
+    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+    transform: translateX(5px);
+}
+</style>{% extends "layout.html" %}
 {% block title %}Register — Study Game{% endblock %}
 {% block content %}
 <div class="row justify-content-center">
   <div class="col-md-6">
-    <h2>Register</h2>
-    <form method="post">
+    
+    <!-- Registration Progress (optional) -->
+    <div class="registration-progress mb-4">
+      <div class="progress-step active">1</div>
+      <div class="progress-step">2</div>
+      <div class="progress-step">3</div>
+    </div>
+    
+    <h2>Create Your Account</h2>
+    
+    {% if error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      {{ error }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endif %}
+    
+    <form method="post" id="registerForm" novalidate>
+      
+      <!-- Username Field -->
       <div class="mb-3">
         <label class="form-label">Username</label>
-        <input name="username" class="form-control" required>
+        <input name="username" class="form-control" required 
+               placeholder="Choose a unique username"
+               pattern="^[a-zA-Z0-9_]{3,20}$"
+               title="3-20 characters, letters, numbers, and underscores only">
+        <div class="invalid-feedback">
+          Username must be 3-20 characters (letters, numbers, underscores)
+        </div>
       </div>
-      <div class="mb-3">
+      
+      <!-- Password Field with Toggle -->
+      <div class="mb-3 password-field">
         <label class="form-label">Password</label>
-        <input name="password" type="password" class="form-control" required>
+        <input name="password" type="password" class="form-control" required 
+               id="password"
+               placeholder="At least 8 characters"
+               minlength="8"
+               pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
+               title="At least 8 characters with letters and numbers">
+        <button type="button" class="password-toggle" onclick="togglePassword()">
+          <i class="bi bi-eye"></i>
+        </button>
+        <div class="invalid-feedback">
+          Password must be at least 8 characters with letters and numbers
+        </div>
       </div>
+      
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label class="form-label">Confirm Password</label>
+        <input name="confirm_password" type="password" class="form-control" required
+               id="confirmPassword"
+               placeholder="Re-enter your password">
+        <div class="invalid-feedback">
+          Passwords do not match
+        </div>
+      </div>
+      
+      <!-- Teacher Option -->
       <div class="mb-3 form-check">
         <input name="is_teacher" type="checkbox" class="form-check-input" id="teachCheck">
-        <label class="form-check-label" for="teachCheck">I'm a teacher</label>
+        <label class="form-check-label" for="teachCheck">
+          <i class="bi bi-person-badge me-1"></i>I'm a teacher
+        </label>
       </div>
-      <div class="mb-3">
-        <label class="form-label">Class name (optional)</label>
-        <input name="class_name" class="form-control">
+      
+      <!-- Class Name (appears when teacher is checked) -->
+      <div class="mb-3 teacher-section" id="teacherSection" style="display: none;">
+        <label class="form-label">
+          Class Name <span class="optional-label">(Optional)</span>
+        </label>
+        <input name="class_name" class="form-control" 
+               placeholder="e.g., 'Computer Science 101'">
+        <small class="text-muted">Create a class to track student progress</small>
       </div>
-      <button class="btn btn-primary">Register</button>
+      
+      <!-- Terms and Conditions -->
+      <div class="mb-3 form-check">
+        <input name="terms" type="checkbox" class="form-check-input" id="termsCheck" required>
+        <label class="form-check-label" for="termsCheck">
+          I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and 
+          <a href="#" class="text-primary">Privacy Policy</a>
+        </label>
+        <div class="invalid-feedback">
+          You must agree to the terms and conditions
+        </div>
+      </div>
+      
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-person-plus me-2"></i>Create Account
+      </button>
+      
     </form>
+    
+    <!-- Login Link -->
+    <div class="login-link">
+      Already have an account? 
+      <a href="{{ url_for('login') }}">Login here</a>
+    </div>
+    
   </div>
 </div>
+
+<script>
+  // Password toggle functionality
+  function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const toggleIcon = document.querySelector('.password-toggle i');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.classList.remove('bi-eye');
+      toggleIcon.classList.add('bi-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.classList.remove('bi-eye-slash');
+      toggleIcon.classList.add('bi-eye');
+    }
+  }
+  
+  // Show/hide teacher section
+  document.getElementById('teachCheck').addEventListener('change', function() {
+    const teacherSection = document.getElementById('teacherSection');
+    if (this.checked) {
+      teacherSection.style.display = 'block';
+      setTimeout(() => {
+        teacherSection.style.opacity = '1';
+        teacherSection.style.transform = 'translateY(0)';
+      }, 10);
+    } else {
+      teacherSection.style.display = 'none';
+    }
+  });
+  
+  // Form validation
+  document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const form = e.target;
+    
+    // Check password match
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    if (password.value !== confirmPassword.value) {
+      e.preventDefault();
+      confirmPassword.classList.add('is-invalid');
+      confirmPassword.classList.remove('is-valid');
+      confirmPassword.parentElement.querySelector('.invalid-feedback').textContent = 
+        'Passwords do not match';
+      confirmPassword.focus();
+    } else {
+      confirmPassword.classList.remove('is-invalid');
+      confirmPassword.classList.add('is-valid');
+    }
+    
+    // Validate terms agreement
+    const termsCheck = document.getElementById('termsCheck');
+    if (!termsCheck.checked) {
+      e.preventDefault();
+      termsCheck.classList.add('is-invalid');
+      termsCheck.focus();
+    }
+  });
+  
+  // Real-time validation
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('input', function() {
+      if (this.checkValidity()) {
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+      } else {
+        this.classList.remove('is-valid');
+        this.classList.add('is-invalid');
+      }
+    });
+  });
+</script>
 {% endblock %}
