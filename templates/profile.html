@@ -1,0 +1,520 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <!-- Profile Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <!-- Avatar Section -->
+                        <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0">
+                            <div class="position-relative d-inline-block">
+                                {% if user.avatar %}
+                                    <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
+                                         alt="{{ user.username }}'s avatar" 
+                                         class="rounded-circle border border-4 border-primary shadow-lg"
+                                         style="width: 180px; height: 180px; object-fit: cover;"
+                                         onerror="this.src='https://ui-avatars.com/api/?name={{ user.username }}&background=667eea&color=fff&size=180'">
+                                {% else %}
+                                    <div class="bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                                         style="width: 180px; height: 180px; font-size: 3.5rem;">
+                                        {{ user.username[0]|upper }}
+                                    </div>
+                                {% endif %}
+                                <div class="position-absolute bottom-0 end-0 bg-success border border-4 border-white rounded-circle p-2">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- User Info Section -->
+                        <div class="col-lg-8">
+                            <div class="d-flex flex-column">
+                                <!-- Username and Level -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <h1 class="display-4 fw-bold mb-0">{{ user.username }}</h1>
+                                    <div class="ms-3">
+                                        <span class="badge bg-gradient-primary text-white fs-5 px-3 py-2">
+                                            <i class="bi bi-star-fill me-1"></i>Level {{ user.level }}
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Badges -->
+                                <div class="mb-4">
+                                    <h5 class="mb-2"><i class="bi bi-award me-2"></i>Badges</h5>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        {% if user.badges %}
+                                            {% for badge in user.badges.split(',') %}
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-2">
+                                                    <i class="bi bi-trophy me-1"></i>{{ badge|trim }}
+                                                </span>
+                                            {% endfor %}
+                                        {% else %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-3 py-2">
+                                                <i class="bi bi-emoji-smile me-1"></i>No badges yet
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Member Since -->
+                                <div class="mb-3">
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Member since: {{ user.joined_date if user.joined_date else 'Recently' }}
+                                    </small>
+                                </div>
+                                
+                                <!-- Bio Section -->
+                                <div class="mb-4">
+                                    <h5 class="mb-2"><i class="bi bi-person-lines-fill me-2"></i>About</h5>
+                                    <p class="text-muted mb-0">
+                                        {% if user.bio %}
+                                            {{ user.bio }}
+                                        {% else %}
+                                            Knowledge seeker and quiz enthusiast. Always ready for a challenge!
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <!-- Edit Profile Button -->
+                                <div class="mt-2">
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                        <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="display-6 fw-bold mb-4"><i class="bi bi-bar-chart-fill me-2"></i>Performance Statistics</h2>
+            <div class="row g-4">
+                <!-- Total Points -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-trophy text-primary fs-2"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-primary mb-2">{{ user.points }}</div>
+                            <h6 class="card-title text-muted">Total Points</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quizzes Completed -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-check-circle text-success fs-2"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-success mb-2">{{ total_quizzes.count if total_quizzes.count is defined else 0 }}</div>
+                            <h6 class="card-title text-muted">Quizzes Completed</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current Streak -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-fire text-warning fs-2"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-warning mb-2">{{ user.streak if user.streak is defined else 0 }}</div>
+                            <h6 class="card-title text-muted">Current Streak</h6>
+                            <small class="text-muted">days</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Best Streak -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-danger bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-lightning-charge text-danger fs-2"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-danger mb-2">{{ user.best_streak if user.best_streak is defined else 0 }}</div>
+                            <h6 class="card-title text-muted">Best Streak</h6>
+                            <small class="text-muted">days</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Average Score -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-info bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-graph-up-arrow text-info fs-2"></i>
+                            </div>
+                            <div class="display-4 fw-bold text-info mb-2">
+                                {{ "%.1f"|format(avg_score.avg if avg_score.avg is defined and avg_score.avg else 0) }}%
+                            </div>
+                            <h6 class="card-title text-muted">Average Score</h6>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Best Subject -->
+                <div class="col-md-6 col-lg-4 col-xl-2">
+                    <div class="card border-0 shadow-sm h-100 hover-lift">
+                        <div class="card-body text-center p-4">
+                            <div class="bg-purple bg-opacity-10 rounded-circle p-3 mb-3 mx-auto" style="width: 70px; height: 70px;">
+                                <i class="bi bi-stars text-purple fs-2"></i>
+                            </div>
+                            <div class="display-6 fw-bold text-purple mb-2">
+                                {{ best_subject.subject if best_subject and best_subject.subject else 'None' }}
+                            </div>
+                            <h6 class="card-title text-muted">Best Subject</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Achievements -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0"><i class="bi bi-award me-2"></i>Recent Achievements</h3>
+                        <a href="{{ url_for('achievements') }}" class="btn btn-light btn-sm">
+                            View All <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if achievements %}
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-4">
+                        {% for ach in achievements[:6] %}
+                        <div class="col">
+                            <div class="card border-0 shadow-sm h-100 hover-lift text-center p-3">
+                                <div class="mb-3">
+                                    <i class="bi bi-{{ ach.achievement_icon if ach.achievement_icon else 'trophy' }}-fill display-5 text-warning"></i>
+                                </div>
+                                <h6 class="card-title mb-2">{{ ach.achievement_name }}</h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar me-1"></i>
+                                    {{ ach.date_earned[:10] if ach.date_earned else 'Recently' }}
+                                </small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-emoji-smile display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted mb-3">No achievements yet</h4>
+                        <p class="text-muted mb-4">Complete quizzes to earn achievements!</p>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+                            <i class="bi bi-play-circle me-2"></i>Start a Quiz
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Activity</h3>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% if recent_quizzes %}
+                            {% for quiz in recent_quizzes[:5] %}
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-{{ 'success' if quiz.score >= quiz.total_questions * 0.8 else 'warning' if quiz.score >= quiz.total_questions * 0.6 else 'danger' }}"></div>
+                                <div class="timeline-content">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="mb-1">Completed {{ quiz.subject }} Quiz</h6>
+                                        <small class="text-muted">{{ quiz.completed_at if quiz.completed_at else 'Recently' }}</small>
+                                    </div>
+                                    <p class="text-muted mb-1">
+                                        Score: {{ quiz.score }}/{{ quiz.total_questions }} 
+                                        ({{ ((quiz.score / quiz.total_questions) * 100)|round|int }}%)
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <span class="badge bg-{{ 'success' if quiz.difficulty == 'easy' else 'warning' if quiz.difficulty == 'medium' else 'danger' }}">
+                                            {{ quiz.difficulty|capitalize }}
+                                        </span>
+                                        <span class="badge bg-info">{{ quiz.points_earned }} points</span>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-clock-history display-1 text-muted mb-3"></i>
+                                <h5 class="text-muted">No recent activity</h5>
+                                <p class="text-muted mb-0">Start your learning journey today!</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                </a>
+                <a href="{{ url_for('quiz', subject='Math', difficulty='medium') }}" class="btn btn-success btn-lg px-4">
+                    <i class="bi bi-play-circle me-2"></i>Take a Quiz
+                </a>
+                <button class="btn btn-outline-primary btn-lg px-4" id="shareProfile">
+                    <i class="bi bi-share me-2"></i>Share Profile
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">Bio</label>
+                        <textarea class="form-control" id="bio" rows="3" placeholder="Tell us about yourself...">{{ user.bio if user.bio else '' }}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="avatarSelect" class="form-label">Change Avatar</label>
+                        <select class="form-select" id="avatarSelect">
+                            <option value="" {% if not user.avatar %}selected{% endif %}>Default Avatar</option>
+                            <option value="avatar1.png" {% if user.avatar == 'avatar1.png' %}selected{% endif %}>Explorer</option>
+                            <option value="avatar2.png" {% if user.avatar == 'avatar2.png' %}selected{% endif %}>Scholar</option>
+                            <option value="avatar3.png" {% if user.avatar == 'avatar3.png' %}selected{% endif %}>Wizard</option>
+                            <option value="avatar4.png" {% if user.avatar == 'avatar4.png' %}selected{% endif %}>Warrior</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+    
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+    
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    /* Timeline Styling */
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #e0e0e0;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: 3px solid white;
+        z-index: 1;
+    }
+    
+    .timeline-content {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 500;
+    }
+    
+    .display-6 {
+        font-size: calc(1.375rem + 1.5vw);
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Share profile functionality
+    document.getElementById('shareProfile').addEventListener('click', function() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ user.username }} - LearnQuest Profile',
+                text: 'Check out my LearnQuest profile!',
+                url: window.location.href
+            });
+        } else {
+            // Fallback for browsers that don't support Web Share API
+            navigator.clipboard.writeText(window.location.href);
+            showToast('Profile link copied to clipboard!', 'success');
+        }
+    });
+    
+    // Save profile function
+    window.saveProfile = function() {
+        const bio = document.getElementById('bio').value;
+        const avatar = document.getElementById('avatarSelect').value;
+        
+        // Show loading state
+        showToast('Saving profile...', 'info');
+        
+        // In a real app, you would send this data to the server
+        setTimeout(() => {
+            showToast('Profile updated successfully!', 'success');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+            modal.hide();
+            
+            // Reload the page to show changes
+            setTimeout(() => location.reload(), 1000);
+        }, 1500);
+    };
+    
+    // Function to show toast notifications
+    function showToast(message, type = 'info') {
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            createToastContainer();
+            toastContainer = document.querySelector('.toast-container');
+        }
+        
+        const toastId = 'toast-' + Date.now();
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        toastContainer.innerHTML += toastHtml;
+        const toastEl = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        
+        toastEl.addEventListener('hidden.bs.toast', function () {
+            this.remove();
+        });
+    }
+    
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1050';
+        document.body.appendChild(container);
+    }
+    
+    // Add hover effects to stats cards
+    const statsCards = document.querySelectorAll('.hover-lift');
+    statsCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('.bi');
+            if (icon) {
+                icon.style.transform = 'scale(1.1)';
+                icon.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('.bi');
+            if (icon) {
+                icon.style.transform = 'scale(1)';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

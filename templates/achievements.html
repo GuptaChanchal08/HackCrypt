@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center">
+                <div class="position-relative d-inline-block mb-4">
+                    <i class="bi bi-trophy-fill display-1 text-warning"></i>
+                    <div class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                         style="font-size: 1rem;">
+                        {{ earned_names|length }}/{{ all_achievements|length }}
+                    </div>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">🏆 Achievements Hall of Fame</h1>
+                <p class="lead text-muted mb-4">
+                    Unlock badges by completing challenges and climbing the leaderboard!
+                </p>
+                <div class="progress mb-3" style="height: 10px;">
+                    {% set progress = (earned_names|length / all_achievements|length * 100)|int %}
+                    <div class="progress-bar bg-gradient-warning" role="progressbar" 
+                         style="width:  progress " 
+                         aria-valuenow="{{ progress }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                    </div>
+                </div>
+                <p class="mb-0">
+                    <span class="badge bg-success">{{ earned_names|length }} Unlocked</span>
+                    <span class="badge bg-secondary ms-2">{{ all_achievements|length - earned_names|length }} Locked</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Buttons -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                <button class="btn btn-outline-primary active" data-filter="all">
+                    <i class="bi bi-grid-fill me-1"></i> All Achievements
+                </button>
+                <button class="btn btn-outline-success" data-filter="earned">
+                    <i class="bi bi-unlock-fill me-1"></i> Unlocked ({{ earned_names|length }})
+                </button>
+                <button class="btn btn-outline-secondary" data-filter="locked">
+                    <i class="bi bi-lock-fill me-1"></i> Locked ({{ all_achievements|length - earned_names|length }})
+                </button>
+            </div>
+            
+            <div class="input-group mb-4">
+                <span class="input-group-text bg-light">
+                    <i class="bi bi-search"></i>
+                </span>
+                <input type="text" class="form-control" id="achievementSearch" placeholder="Search achievements...">
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements Grid -->
+    <div class="row g-4 mb-5" id="achievementsGrid">
+        {% for ach in all_achievements %}
+        {% set is_earned = ach.name in earned_names %}
+        <div class="col-md-6 col-lg-4 col-xl-3 achievement-item" 
+             data-category="{% if is_earned %}earned{% else %}locked{% endif %} {{ ach.rarity|default('common')|lower }}">
+            <div class="card h-100 border-0 shadow-lg hover-shadow {% if is_earned %}border-success border-2{% else %}border-light{% endif %}">
+                <!-- Card Header with Icon -->
+                <div class="card-header bg-transparent border-0 pt-4 pb-0">
+                    <div class="text-center position-relative">
+                        <div class="achievement-icon-container mx-auto mb-3">
+                            {% if is_earned %}
+                                <div class="bg-gradient-{{ ach.rarity|default('common')|lower }} text-white rounded-circle p-3 d-inline-flex align-items-center justify-content-center" 
+                                     style="width: 80px; height: 80px;">
+                                    <i class="{{ ach.icon_class|default('bi bi-star-fill') }} fs-2"></i>
+                                </div>
+                                <div class="position-absolute top-0 end-0 bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 30px; height: 30px;">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+                            {% else %}
+                                <div class="bg-light text-secondary rounded-circle p-3 d-inline-flex align-items-center justify-content-center position-relative" 
+                                     style="width: 80px; height: 80px;">
+                                    <i class="{{ ach.icon_class|default('bi bi-star') }} fs-2 opacity-50"></i>
+                                    <div class="position-absolute top-50 start-50 translate-middle">
+                                        <i class="bi bi-lock fs-5 text-dark opacity-75"></i>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                
+                <!-- Card Body -->
+                <div class="card-body text-center pt-0">
+                    <h5 class="card-title mb-2">{{ ach.name }}</h5>
+                    <p class="card-text text-muted mb-3">{{ ach.description }}</p>
+                    
+                    <!-- Progress Bar for Progressive Achievements -->
+                    {% if ach.progress_max %}
+                        {% set progress = ach.current_progress|default(0) %}
+                        {% set percentage = (progress / ach.progress_max * 100)|int %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Progress</span>
+                                <span>{{ progress }}/{{ ach.progress_max }}</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-{{ 'success' if is_earned else 'secondary' }}" 
+                                     role="progressbar" 
+                                     style="width: percentage">
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Requirements -->
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Requirements: {{ ach.requirements }}
+                        </small>
+                    </div>
+                </div>
+                
+                <!-- Card Footer -->
+                <div class="card-footer bg-transparent border-0 pb-4">
+                    {% if is_earned %}
+                        {% for user_ach in user_achievements %}
+                            {% if user_ach.achievement_name == ach.name %}
+                                <div class="text-center">
+                                    <small class="text-success d-block mb-1">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Earned on {{ user_ach.earned_at[:10] }}
+                                    </small>
+                                    <div class="badge bg-success bg-opacity-10 text-success">
+                                        <i class="bi bi-check-circle me-1"></i> Unlocked
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center">
+                            <small class="text-muted d-block mb-1">
+                                <i class="bi bi-clock-history me-1"></i>
+                                Keep playing to unlock!
+                            </small>
+                            <div class="badge bg-secondary bg-opacity-10 text-secondary">
+                                <i class="bi bi-lock me-1"></i> Locked
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Achievement Statistics
+                    </h5>
+                    <div class="row g-4">
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-primary mb-1">{{ earned_names|length }}</div>
+                                <small class="text-muted">Total Unlocked</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-secondary mb-1">{{ all_achievements|length }}</div>
+                                <small class="text-muted">Total Achievements</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-success mb-1">{{ total_achievement_points }}</div>
+                                <small class="text-muted">Points Earned</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                {% set completion_rate = (earned_names|length / all_achievements|length * 100)|int %}
+                                <div class="display-5 fw-bold text-warning mb-1">{{ completion_rate }}%</div>
+                                <small class="text-muted">Completion Rate</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center">
+                <a href="{{ url_for('profile') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-arrow-left me-2"></i>Back to Profile
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary btn-lg px-4 ms-2">
+                    <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS -->
+<style>
+    .bg-gradient-common {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+    
+    .bg-gradient-rare {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    }
+    
+    .bg-gradient-epic {
+        background: linear-gradient(135deg, #6f42c1 0%, #4a1d96 100%);
+    }
+    
+    .bg-gradient-legendary {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+    }
+    
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+    
+    .hover-shadow {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .achievement-icon-container {
+        position: relative;
+        width: 90px;
+        height: 90px;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        border-radius: 3px;
+    }
+    
+    .btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+    
+    /* Animation for achievement cards */
+    .achievement-item {
+        animation: fadeInUp 0.5s ease-out;
+        animation-fill-mode: both;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Stagger animation delays */
+    .achievement-item:nth-child(1) { animation-delay: 0.1s; }
+    .achievement-item:nth-child(2) { animation-delay: 0.2s; }
+    .achievement-item:nth-child(3) { animation-delay: 0.3s; }
+    .achievement-item:nth-child(4) { animation-delay: 0.4s; }
+    .achievement-item:nth-child(5) { animation-delay: 0.5s; }
+    .achievement-item:nth-child(6) { animation-delay: 0.6s; }
+    .achievement-item:nth-child(7) { animation-delay: 0.7s; }
+    .achievement-item:nth-child(8) { animation-delay: 0.8s; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filter buttons functionality
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    const achievementItems = document.querySelectorAll('.achievement-item');
+    const searchInput = document.getElementById('achievementSearch');
+    
+    // Filter achievements
+    function filterAchievements(filter) {
+        achievementItems.forEach(item => {
+            const categories = item.dataset.category.split(' ');
+            const matchesFilter = filter === 'all' || categories.includes(filter);
+            const matchesSearch = searchInput.value.toLowerCase();
+            const matchesName = item.querySelector('.card-title').textContent.toLowerCase().includes(matchesSearch);
+            const matchesDesc = item.querySelector('.card-text').textContent.toLowerCase().includes(matchesSearch);
+            
+            if (matchesFilter && (matchesName || matchesDesc || !matchesSearch)) {
+                item.style.display = 'block';
+                setTimeout(() => {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 10);
+            } else {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    item.style.display = 'none';
+                }, 300);
+            }
+        });
+        
+        // Update active button
+        filterButtons.forEach(btn => {
+            if (btn.dataset.filter === filter) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    // Event listeners for filter buttons
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterAchievements(btn.dataset.filter);
+        });
+    });
+    
+    // Search functionality
+    searchInput.addEventListener('input', () => {
+        const currentFilter = document.querySelector('[data-filter].active').dataset.filter;
+        filterAchievements(currentFilter);
+    });
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Add hover effects to achievement cards
+    achievementItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('.achievement-icon-container i');
+            if (icon) {
+                icon.style.transform = 'scale(1.1)';
+                icon.style.transition = 'transform 0.3s ease';
+            }
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('.achievement-icon-container i');
+            if (icon) {
+                icon.style.transform = 'scale(1)';
+            }
+        });
+    });
+    
+    // Animate achievements on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    achievementItems.forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Initialize with 'all' filter
+    filterAchievements('all');
+});
+</script>
+{% endblock %}

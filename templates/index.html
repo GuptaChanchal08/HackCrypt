@@ -1,367 +1,487 @@
-{% extends "layout.html" %}
-{% block title %}Home — Study Game{% endblock %}
+{% extends "base.html" %}
+
 {% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5 py-lg-7">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="hero-content animate-fade-in-up">
+                    <div class="d-inline-block bg-primary bg-opacity-10 rounded-pill px-4 py-2 mb-3">
+                        <span class="text-primary fw-bold"><i class="bi bi-rocket-takeoff me-1"></i> Level Up Your Learning</span>
+                    </div>
+                    <h1 class="display-2 fw-bold mb-3 gradient-text">
+                        Welcome to <span class="text-primary">LearnQuest</span>! 🎯
+                    </h1>
+                    <p class="lead mb-4 text-muted">
+                        Transform your knowledge into power. Compete, learn, and conquer with interactive quizzes across multiple subjects. 
+                        Join thousands of learners on their quest for knowledge!
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-5">
+                        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 py-3 fw-bold">
+                            <i class="bi bi-rocket-takeoff me-2"></i> Start Your Journey
+                        </a>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg px-4 py-3 fw-bold">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Continue Adventure
+                        </a>
+                    </div>
+                    
+                    <!-- Quick Stats -->
+                    <div class="row g-4">
+                        <div class="col-4 col-md-3">
+                            <div class="text-center">
+                                <div class="h2 fw-bold text-primary mb-1" id="userCount">5K+</div>
+                                <small class="text-muted">Active Learners</small>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <div class="text-center">
+                                <div class="h2 fw-bold text-success mb-1" id="quizCount">10K+</div>
+                                <small class="text-muted">Quizzes Taken</small>
+                            </div>
+                        </div>
+                        <div class="col-4 col-md-3">
+                            <div class="text-center">
+                                <div class="h2 fw-bold text-warning mb-1" id="subjectCount">15+</div>
+                                <small class="text-muted">Subjects</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="position-relative animate-fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="card border-0 shadow-lg overflow-hidden">
+                        <div class="card-body p-0">
+                            <div class="position-relative">
+                                <img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                     alt="Learning Journey" 
+                                     class="img-fluid rounded-3">
+                                <div class="position-absolute bottom-0 start-0 end-0 p-4 bg-dark bg-opacity-50 text-white">
+                                    <h4 class="mb-2">Join the Learning Revolution</h4>
+                                    <p class="mb-0 small">Experience education like never before</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Elements -->
+                    <div class="position-absolute top-0 start-0 translate-middle">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px;">
+                            <i class="bi bi-trophy fs-4"></i>
+                        </div>
+                    </div>
+                    <div class="position-absolute top-0 end-0 translate-middle">
+                        <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px;">
+                            <i class="bi bi-lightning-charge fs-4"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5 py-lg-7 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">Why Choose LearnQuest?</h2>
+            <p class="lead text-muted mb-0">Discover features that make learning exciting and effective</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-3 mb-4 mx-auto" style="width: 80px; height: 80px;">
+                            <i class="bi bi-book-fill text-primary fs-2"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Multiple Subjects</h4>
+                        <p class="card-text text-muted">
+                            Explore Math, Science, History, Geography, Literature and more. Continuous updates with new topics!
+                        </p>
+                        <div class="mt-3">
+                            <span class="badge bg-primary">15+ Subjects</span>
+                            <span class="badge bg-info ms-1">100+ Topics</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-3 mb-4 mx-auto" style="width: 80px; height: 80px;">
+                            <i class="bi bi-trophy-fill text-success fs-2"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Earn Badges</h4>
+                        <p class="card-text text-muted">
+                            Unlock achievements and collect badges as you progress. Showcase your learning milestones!
+                        </p>
+                        <div class="mt-3">
+                            <span class="badge bg-success">50+ Badges</span>
+                            <span class="badge bg-warning ms-1">Achievements</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-3 mb-4 mx-auto" style="width: 80px; height: 80px;">
+                            <i class="bi bi-graph-up-arrow text-warning fs-2"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Level Up System</h4>
+                        <p class="card-text text-muted">
+                            Gain experience points, level up, and unlock new features. Watch your knowledge grow!
+                        </p>
+                        <div class="mt-3">
+                            <span class="badge bg-warning">100 Levels</span>
+                            <span class="badge bg-info ms-1">XP System</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-3 mb-4 mx-auto" style="width: 80px; height: 80px;">
+                            <i class="bi bi-people-fill text-danger fs-2"></i>
+                        </div>
+                        <h4 class="card-title mb-3">Friendly Competition</h4>
+                        <p class="card-text text-muted">
+                            Challenge friends, climb leaderboards, and participate in tournaments. Learning is more fun together!
+                        </p>
+                        <div class="mt-3">
+                            <span class="badge bg-danger">Live Rankings</span>
+                            <span class="badge bg-success ms-1">Tournaments</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 py-lg-7">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold mb-3">What Our Learners Say</h2>
+            <p class="lead text-muted mb-0">Join thousands of satisfied knowledge seekers</p>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://ui-avatars.com/api/?name=Alex+Johnson&background=667eea&color=fff&size=60" 
+                                 alt="Alex Johnson" 
+                                 class="rounded-circle me-3">
+                            <div>
+                                <h5 class="mb-0">Alex Johnson</h5>
+                                <small class="text-muted">Student • Level 42</small>
+                            </div>
+                        </div>
+                        <p class="card-text">
+                            "LearnQuest transformed how I study! The gamification makes learning addictive. 
+                            I've improved my grades significantly."
+                        </p>
+                        <div class="text-warning">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://ui-avatars.com/api/?name=Maria+Garcia&background=764ba2&color=fff&size=60" 
+                                 alt="Maria Garcia" 
+                                 class="rounded-circle me-3">
+                            <div>
+                                <h5 class="mb-0">Maria Garcia</h5>
+                                <small class="text-muted">Teacher • 500+ Quizzes</small>
+                            </div>
+                        </div>
+                        <p class="card-text">
+                            "As a teacher, I use LearnQuest to engage my students. The progress tracking and 
+                            competitive elements are fantastic!"
+                        </p>
+                        <div class="text-warning">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <img src="https://ui-avatars.com/api/?name=David+Chen&background=4facfe&color=fff&size=60" 
+                                 alt="David Chen" 
+                                 class="rounded-circle me-3">
+                            <div>
+                                <h5 class="mb-0">David Chen</h5>
+                                <small class="text-muted">Lifelong Learner • Top 1%</small>
+                            </div>
+                        </div>
+                        <p class="card-text">
+                            "The daily challenges keep me coming back. I've learned so much while having fun 
+                            competing with friends!"
+                        </p>
+                        <div class="text-warning">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 py-lg-7 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-4">Ready to Begin Your Learning Adventure?</h2>
+                <p class="lead mb-4 opacity-75">
+                    Join thousands of learners who are already mastering subjects, earning badges, 
+                    and climbing the leaderboards. Start your journey today!
+                </p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg px-4 py-3 fw-bold">
+                        <i class="bi bi-person-plus-fill me-2"></i>Create Free Account
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg px-4 py-3 fw-bold">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In Now
+                    </a>
+                </div>
+                <p class="mt-4 mb-0 small opacity-75">
+                    No credit card required • 100% Free to Start • Cancel Anytime
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional CSS -->
 <style>
-    /* Study Game - Premium Styles */
-
-/* Base Styles */
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-    color: #333;
-    line-height: 1.6;
-}
-
-/* Container Background */
-.container-fluid {
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.container-fluid::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-}
-
-/* Header */
-h1 {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 800;
-    margin-bottom: 1rem;
-}
-
-.lead {
-    color: #6c757d;
-    font-size: 1.15rem;
-    margin-bottom: 2.5rem;
-    opacity: 0.9;
-}
-
-h4 {
-    color: #2d3748;
-    margin-bottom: 1.25rem;
-    font-weight: 700;
-    position: relative;
-    padding-bottom: 0.5rem;
-}
-
-h4::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 50px;
-    height: 3px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    border-radius: 2px;
-}
-
-/* Subject Cards */
-.list-group {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-}
-
-.list-group-item {
-    padding: 1.5rem;
-    border: none;
-    border-bottom: 1px solid #e2e8f0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    background: white;
-    position: relative;
-}
-
-.list-group-item:hover {
-    background: linear-gradient(to right, #f8fafc, #ffffff);
-    transform: translateX(8px);
-    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.15);
-    z-index: 1;
-}
-
-.list-group-item::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: linear-gradient(to bottom, #667eea, #764ba2);
-    transition: width 0.3s ease;
-}
-
-.list-group-item:hover::before {
-    width: 4px;
-}
-
-.list-group-item strong {
-    color: #2d3748;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.list-group-item .text-muted {
-    font-size: 0.9rem;
-    color: #718096 !important;
-    margin-top: 0.35rem;
-}
-
-/* Button Styles */
-.btn-outline-primary {
-    border: 2px solid #667eea;
-    color: #667eea;
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
-}
-
-.btn-outline-secondary {
-    border: 2px solid #cbd5e0;
-    color: #718096;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-.btn-outline-secondary:hover {
-    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-    border-color: transparent;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(113, 128, 150, 0.3);
-}
-
-/* Action Cards */
-.card {
-    border: none;
-    border-radius: 16px;
-    background: linear-gradient(145deg, #ffffff, #f7fafc);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
-    overflow: hidden;
-    position: relative;
-    border: 1px solid #e2e8f0;
-}
-
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-}
-
-.card-body {
-    padding: 2rem;
-}
-
-.card h5 {
-    color: #2d3748;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    font-size: 1.25rem;
-}
-
-.card .btn {
-    margin-bottom: 0.75rem;
-    padding: 0.85rem;
-    border-radius: 10px;
-    font-weight: 600;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.card .btn::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-    z-index: -1;
-}
-
-.card .btn:hover::after {
-    left: 100%;
-}
-
-/* Login Card */
-.card p {
-    margin: 0;
-    color: #718096;
-    text-align: center;
-    font-size: 0.95rem;
-}
-
-.card p .btn {
-    margin: 0.35rem;
-    min-width: 110px;
-    display: inline-block;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .container-fluid {
-        margin: 1rem;
-        padding: 1.5rem;
+    .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #4facfe 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
     
-    .col-md-8, .col-md-4 {
-        margin-bottom: 2rem;
+    .hero-section {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        position: relative;
+        overflow: hidden;
     }
     
-    .list-group-item {
-        padding: 1.25rem;
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 400px;
+        height: 400px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        border-radius: 50%;
+        transform: translate(200px, -200px);
     }
     
-    h1 {
-        font-size: 1.8rem;
+    .features-section {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     }
-}
-
-/* Animation */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    
+    .hover-lift {
+        transition: all 0.3s ease;
     }
-}
-
-.row > div {
-    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.col-md-8 {
-    animation-delay: 0.1s;
-}
-
-.col-md-4 {
-    animation-delay: 0.2s;
-}
-
-/* Loading state for items */
-.list-group-item {
-    opacity: 0;
-    animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.list-group-item:nth-child(1) { animation-delay: 0.1s; }
-.list-group-item:nth-child(2) { animation-delay: 0.15s; }
-.list-group-item:nth-child(3) { animation-delay: 0.2s; }
-.list-group-item:nth-child(4) { animation-delay: 0.25s; }
-.list-group-item:nth-child(5) { animation-delay: 0.3s; }
-
-/* Focus States */
-.btn:focus, .list-group-item:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: #f7fafc;
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #68428f 100%);
-}
+    
+    .hover-lift:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .cta-section {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .cta-section::after {
+        content: '';
+        position: absolute;
+        bottom: -100px;
+        left: -100px;
+        width: 300px;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 500;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    /* Animated counters */
+    .counter-animated {
+        animation: countUp 2s ease-out;
+    }
+    
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<div class="container-fluid">
-    <div class="row">
-  <div class="col-md-8">
-    <h1>Welcome to Study Game</h1>
-    <p class="lead">Turn studying into a friendly competition. Choose a subject and start a quiz.</p>
 
-    <h4>Subjects</h4>
-    <div class="list-group">
-      {% for s in subjects %}
-        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" href="{{ url_for('take_quiz', subject_id=s['id']) }}">
-          <div>
-            <strong>{{ s['name'] }}</strong><br />
-            <small class="text-muted">{{ s['description'] }}</small>
-          </div>
-          <span class="btn btn-sm btn-outline-primary">Take Quiz</span>
-        </a>
-      {% endfor %}
-    </div>
-  </div>
-  <div class="col-md-4">
-    {% if user %}
-    <div class="card">
-      <div class="card-body">
-        <h5>Your quick actions</h5>
-        <a class="btn btn-primary w-100 mb-2" href="{{ url_for('dashboard') }}">Dashboard</a>
-        <a class="btn btn-outline-primary w-100 mb-2" href="{{ url_for('leaderboard') }}">Leaderboard</a>
-        <a class="btn btn-outline-secondary w-100" href="{{ url_for('recommendations') }}">Recommendations</a>
-      </div>
-    </div>
-    {% else %}
-    <div class="card">
-      <div class="card-body">
-        <p><a href="{{ url_for('login') }}" class="btn btn-primary">Login</a> or <a href="{{ url_for('register') }}" class="btn btn-secondary">Register</a> to save progress and get badges.</p>
-      </div>
-    </div>
-    {% endif %}
-  </div>
-</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate counters
+    function animateCounter(element, target, duration = 2000) {
+        let start = 0;
+        const increment = target / (duration / 16);
+        const timer = setInterval(() => {
+            start += increment;
+            if (start >= target) {
+                element.textContent = target + '+';
+                clearInterval(timer);
+            } else {
+                element.textContent = Math.floor(start) + '+';
+            }
+        }, 16);
+    }
+    
+    // Start counters when section is in view
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const userCount = document.getElementById('userCount');
+                const quizCount = document.getElementById('quizCount');
+                const subjectCount = document.getElementById('subjectCount');
+                
+                animateCounter(userCount, 5000);
+                animateCounter(quizCount, 10000);
+                animateCounter(subjectCount, 15);
+                
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    const heroSection = document.querySelector('.hero-section');
+    if (heroSection) {
+        observer.observe(heroSection);
+    }
+    
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.hover-lift');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const icon = this.querySelector('.bi');
+            if (icon) {
+                icon.style.transform = 'scale(1.1) rotate(5deg)';
+                icon.style.transition = 'all 0.3s ease';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const icon = this.querySelector('.bi');
+            if (icon) {
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            }
+        });
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 {% endblock %}
-</div>

@@ -1,659 +1,646 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-xl-6">
+            <div class="auth-card card shadow-lg border-0 mt-4 mb-5">
+                <div class="card-body p-4 p-md-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="bi bi-person-plus-fill display-4 text-primary"></i>
+                        </div>
+                        <h2 class="card-title mb-2">Create Your Account</h2>
+                        <p class="text-muted">Join QuizMaster and start your learning journey</p>
+                    </div>
+
+                    <!-- Error Message -->
+                    {% if error %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {{ error }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
+                    <!-- Registration Form -->
+                    <form method="POST" id="registerForm">
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="username" class="form-label fw-semibold">
+                                <i class="bi bi-person-badge me-1"></i>Username
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="bi bi-person"></i>
+                                </span>
+                                <input type="text" 
+                                       class="form-control" 
+                                       id="username" 
+                                       name="username" 
+                                       placeholder="Choose a username"
+                                       required
+                                       autocomplete="username"
+                                       autofocus>
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please choose a username.</div>
+                            </div>
+                            <div class="form-text">This will be your unique identifier</div>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div class="mb-3">
+                            <label for="password" class="form-label fw-semibold">
+                                <i class="bi bi-lock-fill me-1"></i>Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="bi bi-key"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="password" 
+                                       name="password" 
+                                       placeholder="Create a strong password"
+                                       required
+                                       pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Password Requirements -->
+                            <div class="mt-2">
+                                <small class="text-muted d-block mb-1">Password must contain:</small>
+                                <div class="row g-2">
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-check-circle-fill text-success me-2" id="lengthCheck" style="display: none;"></i>
+                                            <i class="bi bi-x-circle-fill text-danger me-2" id="lengthCross"></i>
+                                            <small>8+ characters</small>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-check-circle-fill text-success me-2" id="uppercaseCheck" style="display: none;"></i>
+                                            <i class="bi bi-x-circle-fill text-danger me-2" id="uppercaseCross"></i>
+                                            <small>Uppercase letter</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-check-circle-fill text-success me-2" id="lowercaseCheck" style="display: none;"></i>
+                                            <i class="bi bi-x-circle-fill text-danger me-2" id="lowercaseCross"></i>
+                                            <small>Lowercase letter</small>
+                                        </div>
+                                        <div class="d-flex align-items-center mb-1">
+                                            <i class="bi bi-check-circle-fill text-success me-2" id="specialCheck" style="display: none;"></i>
+                                            <i class="bi bi-x-circle-fill text-danger me-2" id="specialCross"></i>
+                                            <small>Special character</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Password Strength Meter -->
+                            <div class="mt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <small class="text-muted">Password strength</small>
+                                    <small class="fw-semibold" id="strengthText">None</small>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar" id="strengthBar" role="progressbar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label fw-semibold">
+                                <i class="bi bi-lock-fill me-1"></i>Confirm Password
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="bi bi-key-fill"></i>
+                                </span>
+                                <input type="password" 
+                                       class="form-control" 
+                                       id="confirm_password" 
+                                       name="confirm_password" 
+                                       placeholder="Confirm your password"
+                                       required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div class="d-flex align-items-center mt-2" id="passwordMatchMessage" style="display: none;">
+                                <i class="bi bi-check-circle-fill text-success me-2" id="passwordMatchIcon"></i>
+                                <small id="passwordMatchText"></small>
+                            </div>
+                        </div>
+
+                        <!-- Teacher Checkbox -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="is_teacher" name="is_teacher">
+                                <label class="form-check-label fw-semibold" for="is_teacher">
+                                    <i class="bi bi-mortarboard-fill me-2"></i>I am a teacher/instructor
+                                </label>
+                            </div>
+                            <div class="form-text ms-4">
+                                Check this if you want to create and manage quizzes
+                            </div>
+                        </div>
+
+                        <!-- Avatar Selection (Conditional) -->
+                        <div class="mb-4" id="avatarSection">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="bi bi-person-circle me-2"></i>Choose Your Avatar
+                                </div>
+                                <div class="card-body">
+                                    <p class="text-muted mb-3">Select an avatar that represents you in the game</p>
+                                    
+                                    <div class="row g-3">
+                                        <!-- Avatar 1 -->
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <div class="avatar-option">
+                                                <input type="radio" class="btn-check" name="avatar" id="avatar1" value="avatar1" autocomplete="off" required>
+                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar1">
+                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
+                                                        <img src="{{ url_for('static', filename='avatars/avatar1.png') }}" 
+                                                             alt="Explorer" 
+                                                             class="img-fluid"
+                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI2IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTM1IDcwQzQwIDYwIDYwIDYwIDY1IDcwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz48L3N2Zz4='">
+                                                    </div>
+                                                    <small class="fw-semibold">Explorer</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Avatar 2 -->
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <div class="avatar-option">
+                                                <input type="radio" class="btn-check" name="avatar" id="avatar2" value="avatar2" autocomplete="off" required>
+                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar2">
+                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
+                                                        <img src="{{ url_for('static', filename='avatars/avatar2.png') }}" 
+                                                             alt="Scholar" 
+                                                             class="img-fluid"
+                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSI1MCIgZmlsbD0iI2ZhNzA5YSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI0MCIgcj0iNiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNDAgNzBDNDUgNjAgNTUgNjAgNjAgNzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik00NSAzNUw1NSA0NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+'">
+                                                    </div>
+                                                    <small class="fw-semibold">Scholar</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Avatar 3 -->
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <div class="avatar-option">
+                                                <input type="radio" class="btn-check" name="avatar" id="avatar3" value="avatar3" autocomplete="off" required>
+                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar3">
+                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
+                                                        <img src="{{ url_for('static', filename='avatars/avatar3.png') }}" 
+                                                             alt="Wizard" 
+                                                             class="img-fluid"
+                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9IiM0M2U5N2IiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI2IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTM1IDYwQzQwIDU1IDYwIDU1IDY1IDYwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDAgNzBDNDUgNjUgNTUgNjUgNjAgNzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=='">
+                                                    </div>
+                                                    <small class="fw-semibold">Wizard</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Avatar 4 -->
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <div class="avatar-option">
+                                                <input type="radio" class="btn-check" name="avatar" id="avatar4" value="avatar4" autocomplete="off" required>
+                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar4">
+                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
+                                                        <img src="{{ url_for('static', filename='avatars/avatar4.png') }}" 
+                                                             alt="Warrior" 
+                                                             class="img-fluid"
+                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiB4PSIxMCIgeT0iMTAiIHJ4PSIyMCIgZmlsbD0iI2ZmY2MwMCIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI0MCIgcj0iNiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNMzUgNjVDNDAgNjAgNjAgNjAgNjUgNjUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik01MCA3MEw1MCA1NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+'">
+                                                    </div>
+                                                    <small class="fw-semibold">Warrior</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <small class="text-muted">Click on an avatar to select it</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                            </label>
+                            <div class="invalid-feedback">You must agree before submitting.</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mb-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="bi bi-person-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="text-center mb-4">
+                            <hr class="text-muted">
+                            <span class="text-muted px-3">or sign up with</span>
+                        </div>
+
+                        <!-- Social Login -->
+                        <div class="row g-2 mb-4">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-dark w-100">
+                                    <i class="bi bi-google me-2"></i>Google
+                                </button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-twitter me-2"></i>Twitter
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Login Link -->
+                        <div class="text-center">
+                            <p class="mb-0 text-muted">
+                                Already have an account?
+                                <a href="{{ url_for('login') }}" class="text-decoration-none fw-bold">
+                                    Login here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Elements
+    const teacherCheckbox = document.getElementById('is_teacher');
+    const avatarSection = document.getElementById('avatarSection');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    const toggleConfirmBtn = document.getElementById('toggleConfirmPassword');
+    const passwordMatchMessage = document.getElementById('passwordMatchMessage');
+    const passwordMatchIcon = document.getElementById('passwordMatchIcon');
+    const passwordMatchText = document.getElementById('passwordMatchText');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const form = document.getElementById('registerForm');
+    
+    // Password requirement icons
+    const lengthCheck = document.getElementById('lengthCheck');
+    const lengthCross = document.getElementById('lengthCross');
+    const uppercaseCheck = document.getElementById('uppercaseCheck');
+    const uppercaseCross = document.getElementById('uppercaseCross');
+    const lowercaseCheck = document.getElementById('lowercaseCheck');
+    const lowercaseCross = document.getElementById('lowercaseCross');
+    const specialCheck = document.getElementById('specialCheck');
+    const specialCross = document.getElementById('specialCross');
+    
+    // Avatar requirement elements
+    const avatarInputs = document.querySelectorAll('input[name="avatar"]');
+    
+    // Initialize avatar section visibility
+    updateAvatarSection();
+    
+    // Toggle avatar section based on teacher checkbox
+    teacherCheckbox.addEventListener('change', updateAvatarSection);
+    
+    // Toggle password visibility
+    togglePasswordBtn.addEventListener('click', function() {
+        togglePasswordVisibility(passwordInput, this.querySelector('i'));
+        toggleButtonState(this);
+    });
+    
+    toggleConfirmBtn.addEventListener('click', function() {
+        togglePasswordVisibility(confirmPasswordInput, this.querySelector('i'));
+        toggleButtonState(this);
+    });
+    
+    // Real-time password validation
+    passwordInput.addEventListener('input', validatePassword);
+    confirmPasswordInput.addEventListener('input', validatePasswordConfirmation);
+    
+    // Validate password on blur
+    passwordInput.addEventListener('blur', validatePassword);
+    confirmPasswordInput.addEventListener('blur', validatePasswordConfirmation);
+    
+    // Form submission validation
+    form.addEventListener('submit', validateForm);
+    
+    // Functions
+    function updateAvatarSection() {
+        if (teacherCheckbox.checked) {
+            avatarSection.style.display = 'none';
+            avatarInputs.forEach(input => {
+                input.required = false;
+                input.checked = false;
+            });
+        } else {
+            avatarSection.style.display = 'block';
+            avatarInputs.forEach(input => {
+                input.required = true;
+            });
+        }
+    }
+    
+    function togglePasswordVisibility(input, icon) {
+        const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+        input.setAttribute('type', type);
+        icon.classList.toggle('bi-eye');
+        icon.classList.toggle('bi-eye-slash');
+    }
+    
+    function toggleButtonState(button) {
+        button.classList.toggle('btn-outline-secondary');
+        button.classList.toggle('btn-outline-primary');
+    }
+    
+    function validatePassword() {
+        const password = passwordInput.value;
+        
+        // Validate individual requirements
+        const hasLength = password.length >= 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasLowercase = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[@$!%*?&]/.test(password);
+        
+        // Update requirement icons
+        updateRequirementIcon(hasLength, lengthCheck, lengthCross);
+        updateRequirementIcon(hasUppercase, uppercaseCheck, uppercaseCross);
+        updateRequirementIcon(hasLowercase, lowercaseCheck, lowercaseCross);
+        updateRequirementIcon(hasSpecial, specialCheck, specialCross);
+        
+        // Calculate password strength
+        let strength = 0;
+        if (hasLength) strength += 25;
+        if (hasUppercase) strength += 25;
+        if (hasLowercase) strength += 25;
+        if (hasNumber) strength += 12.5;
+        if (hasSpecial) strength += 12.5;
+        
+        // Update strength meter
+        strengthBar.style.width = `${strength}%`;
+        
+        // Update strength text and color
+        let strengthLabel, barColor;
+        if (strength <= 25) {
+            strengthLabel = 'Weak';
+            barColor = '#dc3545'; // Red
+        } else if (strength <= 50) {
+            strengthLabel = 'Fair';
+            barColor = '#ffc107'; // Yellow
+        } else if (strength <= 75) {
+            strengthLabel = 'Good';
+            barColor = '#0dcaf0'; // Cyan
+        } else {
+            strengthLabel = 'Strong';
+            barColor = '#198754'; // Green
+        }
+        
+        strengthBar.style.backgroundColor = barColor;
+        strengthText.textContent = strengthLabel;
+        strengthText.style.color = barColor;
+        
+        // Validate password confirmation if confirm password has value
+        if (confirmPasswordInput.value) {
+            validatePasswordConfirmation();
+        }
+    }
+    
+    function updateRequirementIcon(condition, checkIcon, crossIcon) {
+        if (condition) {
+            checkIcon.style.display = 'inline-block';
+            crossIcon.style.display = 'none';
+        } else {
+            checkIcon.style.display = 'none';
+            crossIcon.style.display = 'inline-block';
+        }
+    }
+    
+    function validatePasswordConfirmation() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+        
+        if (!password || !confirmPassword) {
+            passwordMatchMessage.style.display = 'none';
+            confirmPasswordInput.classList.remove('is-valid', 'is-invalid');
+            return;
+        }
+        
+        if (password === confirmPassword) {
+            passwordMatchIcon.className = 'bi bi-check-circle-fill text-success me-2';
+            passwordMatchText.textContent = 'Passwords match';
+            passwordMatchText.className = 'text-success';
+            confirmPasswordInput.classList.add('is-valid');
+            confirmPasswordInput.classList.remove('is-invalid');
+        } else {
+            passwordMatchIcon.className = 'bi bi-x-circle-fill text-danger me-2';
+            passwordMatchText.textContent = 'Passwords do not match';
+            passwordMatchText.className = 'text-danger';
+            confirmPasswordInput.classList.add('is-invalid');
+            confirmPasswordInput.classList.remove('is-valid');
+        }
+        
+        passwordMatchMessage.style.display = 'flex';
+    }
+    
+    function validateForm(event) {
+        // Validate password match
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            event.preventDefault();
+            alert('Please make sure your passwords match.');
+            confirmPasswordInput.focus();
+            return false;
+        }
+        
+        // Validate password strength
+        const strength = parseInt(strengthBar.style.width) || 0;
+        if (strength < 50) { // Require at least "Fair" strength
+            event.preventDefault();
+            alert('Please use a stronger password. Your password should be at least "Fair" strength.');
+            passwordInput.focus();
+            return false;
+        }
+        
+        // Validate avatar selection for non-teachers
+        if (!teacherCheckbox.checked) {
+            let avatarSelected = false;
+            avatarInputs.forEach(input => {
+                if (input.checked) avatarSelected = true;
+            });
+            
+            if (!avatarSelected) {
+                event.preventDefault();
+                alert('Please select an avatar.');
+                return false;
+            }
+        }
+        
+        // Validate terms acceptance
+        const termsCheckbox = document.getElementById('terms');
+        if (!termsCheckbox.checked) {
+            event.preventDefault();
+            alert('You must agree to the Terms of Service and Privacy Policy.');
+            return false;
+        }
+        
+        return true;
+    }
+    
+    // Initialize password validation
+    validatePassword();
+    
+    // Add Bootstrap validation styling
+    (function () {
+        'use strict'
+        
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+        
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    
+                    form.classList.add('was-validated')
+                }, false)
+            })
+    })();
+});
+</script>
+
 <style>
-  /* Registration Page Styles */
-
-/* Full Page Background for Auth Pages */
-body.auth-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    padding: 20px;
-    position: relative;
-    overflow-x: hidden;
+/* Custom Styles for Registration Form */
+.avatar-option .btn-check:checked + .btn {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.1);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
 }
 
-/* Animated Background Elements */
-body.auth-page::before,
-body.auth-page::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.1);
-    z-index: 1;
+.avatar-option .btn-check:focus + .btn {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-body.auth-page::before {
-    width: 300px;
-    height: 300px;
-    top: -150px;
-    right: -150px;
-    animation: float 20s infinite ease-in-out;
+.avatar-img {
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease;
 }
 
-body.auth-page::after {
-    width: 200px;
-    height: 200px;
-    bottom: -100px;
-    left: -100px;
-    animation: float 25s infinite ease-in-out reverse;
+.avatar-option .btn-check:checked + .btn .avatar-img {
+    border-color: #0d6efd;
+    box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
 }
 
-@keyframes float {
-    0%, 100% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    33% {
-        transform: translate(30px, 50px) rotate(120deg);
-    }
-    66% {
-        transform: translate(-20px, 30px) rotate(240deg);
-    }
-}
-
-/* Registration Container */
-.row.justify-content-center {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    animation: slideInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 2;
-}
-
-/* Registration Card */
-.col-md-6 {
+.auth-card {
+    border-radius: 20px;
+    overflow: hidden;
+    border: none;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    padding: 3rem;
-    border-radius: 24px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.col-md-6::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 6px;
-    background: linear-gradient(to right, #667eea, #764ba2, #f093fb);
-    background-size: 300% 100%;
-    animation: gradientShift 3s ease infinite;
+.card-header {
+    border-radius: 15px 15px 0 0 !important;
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* Header */
-h2 {
-    color: #2c3e50;
-    font-weight: 800;
-    margin-bottom: 2.5rem;
-    text-align: center;
-    position: relative;
-    padding-bottom: 1.5rem;
-    font-size: 2.2rem;
-}
-
-h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 5px;
-    background: linear-gradient(to right, #667eea, #764ba2);
+.progress {
     border-radius: 3px;
-    animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-    0%, 100% { width: 80px; }
-    50% { width: 100px; }
-}
-
-/* Form Elements */
-form {
-    margin-top: 2rem;
-}
-
-.mb-3 {
-    margin-bottom: 1.75rem !important;
-    position: relative;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 0.75rem;
-    font-weight: 600;
-    color: #2d3748;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-}
-
-.form-control {
-    width: 100%;
-    padding: 1rem 1.25rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 1.05rem;
-    transition: all 0.3s ease;
-    background: #f8fafc;
-    color: #2d3748;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #667eea;
-    background: white;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
-    transform: translateY(-1px);
-}
-
-.form-control:hover:not(:focus) {
-    border-color: #cbd5e0;
-    background: white;
-}
-
-/* Password Input with Toggle */
-.password-field {
-    position: relative;
-}
-
-.password-toggle {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #a0aec0;
-    cursor: pointer;
-    padding: 5px;
-    transition: color 0.3s ease;
-}
-
-.password-toggle:hover {
-    color: #667eea;
-}
-
-/* Checkbox Styling */
-.form-check {
-    padding-left: 2.5rem;
-    margin: 2rem 0;
-}
-
-.form-check-input {
-    width: 1.2rem;
-    height: 1.2rem;
-    margin-left: -2.5rem;
-    margin-top: 0.2rem;
-    cursor: pointer;
-    border: 2px solid #cbd5e0;
-    transition: all 0.3s ease;
-}
-
-.form-check-input:checked {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: #667eea;
-    background-size: 200% 100%;
-    animation: gradientShift 2s ease infinite;
-}
-
-.form-check-input:focus {
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
-    border-color: #667eea;
-}
-
-.form-check-label {
-    color: #2d3748;
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 1.05rem;
-    transition: color 0.3s ease;
-}
-
-.form-check-label:hover {
-    color: #667eea;
-}
-
-/* Optional Field Indicator */
-.optional-label {
-    font-size: 0.85rem;
-    color: #a0aec0;
-    font-weight: 400;
-    margin-left: 0.5rem;
-}
-
-/* Button Styling */
 .btn-primary {
-    width: 100%;
-    padding: 1.1rem;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 12px;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    position: relative;
-    overflow: hidden;
-    margin-top: 1rem;
-    letter-spacing: 0.5px;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
-    background-size: 200% 100%;
-    animation: gradientShift 1.5s ease infinite;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
-.btn-primary:active {
-    transform: translateY(-1px);
+.input-group-text {
+    border: none;
 }
 
-.btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.7s ease;
-}
-
-.btn-primary:hover::before {
-    left: 100%;
-}
-
-.btn-primary:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.3);
-}
-
-/* Login Link */
-.login-link {
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e2e8f0;
-    color: #718096;
-    font-size: 1rem;
-}
-
-.login-link a {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    position: relative;
-    padding: 0.25rem 0.5rem;
-}
-
-.login-link a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #667eea;
-    transition: width 0.3s ease;
-}
-
-.login-link a:hover {
-    color: #764ba2;
-}
-
-.login-link a:hover::after {
-    width: 100%;
-}
-
-/* Progress Indicator (for multi-step forms) */
-.registration-progress {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 2.5rem;
-    position: relative;
-}
-
-.registration-progress::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 20px;
-    right: 20px;
-    height: 2px;
-    background: #e2e8f0;
-    z-index: 1;
-}
-
-.progress-step {
-    width: 40px;
-    height: 40px;
-    background: white;
-    border: 2px solid #e2e8f0;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    color: #a0aec0;
-    position: relative;
-    z-index: 2;
-}
-
-.progress-step.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.form-check-input:checked {
+    background-color: #667eea;
     border-color: #667eea;
-    color: white;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
 }
 
-/* Animations */
-@keyframes slideInUp {
+.form-switch .form-check-input:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23667eea'/%3e%3c/svg%3e");
+}
+
+/* Animation for form */
+.auth-card {
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(50px) scale(0.95);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateY(0);
     }
 }
 
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
-}
-
-.error-shake {
-    animation: shake 0.5s ease-in-out;
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    body.auth-page {
-        padding: 15px;
+    .avatar-img {
+        width: 60px !important;
+        height: 60px !important;
     }
     
-    .col-md-6 {
-        padding: 2.5rem 2rem;
-        border-radius: 20px;
-    }
-    
-    h2 {
-        font-size: 1.8rem;
-        margin-bottom: 2rem;
-    }
-    
-    .form-control {
-        padding: 0.9rem 1.15rem;
-    }
-    
-    .btn-primary {
-        padding: 1rem;
+    .col-lg-8 {
+        padding: 0 15px;
     }
 }
 
-@media (max-width: 480px) {
-    .col-md-6 {
-        padding: 2rem 1.5rem;
-        border-radius: 16px;
-    }
-    
-    h2 {
-        font-size: 1.6rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .form-check {
-        padding-left: 2rem;
-    }
-    
-    .login-link {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-    }
+/* Custom focus styles */
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
 }
 
-/* Validation Styles */
-.is-invalid {
-    border-color: #f56565 !important;
-    background: linear-gradient(135deg, #fed7d715 0%, #feb2b215 100%) !important;
+/* Social buttons hover effects */
+.btn-outline-dark:hover {
+    background: linear-gradient(135deg, #333 0%, #666 100%);
+    color: white;
 }
 
-.is-valid {
-    border-color: #48bb78 !important;
-    background: linear-gradient(135deg, #c6f6d515 0%, #9ae6b415 100%) !important;
+.btn-outline-primary:hover {
+    background: linear-gradient(135deg, #1877f2 0%, #0d5dbd 100%);
+    color: white;
 }
-
-.invalid-feedback {
-    display: block;
-    margin-top: 0.5rem;
-    color: #f56565;
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-/* Focus Accessibility */
-.form-control:focus-visible,
-.form-check-input:focus-visible,
-.btn-primary:focus-visible {
-    outline: 2px solid #667eea;
-    outline-offset: 2px;
-}
-
-/* Teacher-specific styling */
-.teacher-section {
-    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin: 1.5rem 0;
-    border-left: 4px solid #667eea;
-    transition: all 0.3s ease;
-}
-
-.teacher-section:hover {
-    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-    transform: translateX(5px);
-}
-</style>{% extends "layout.html" %}
-{% block title %}Register — Study Game{% endblock %}
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    
-    <!-- Registration Progress (optional) -->
-    <div class="registration-progress mb-4">
-      <div class="progress-step active">1</div>
-      <div class="progress-step">2</div>
-      <div class="progress-step">3</div>
-    </div>
-    
-    <h2>Create Your Account</h2>
-    
-    {% if error %}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      {{ error }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-    {% endif %}
-    
-    <form method="post" id="registerForm" novalidate>
-      
-      <!-- Username Field -->
-      <div class="mb-3">
-        <label class="form-label">Username</label>
-        <input name="username" class="form-control" required 
-               placeholder="Choose a unique username"
-               pattern="^[a-zA-Z0-9_]{3,20}$"
-               title="3-20 characters, letters, numbers, and underscores only">
-        <div class="invalid-feedback">
-          Username must be 3-20 characters (letters, numbers, underscores)
-        </div>
-      </div>
-      
-      <!-- Password Field with Toggle -->
-      <div class="mb-3 password-field">
-        <label class="form-label">Password</label>
-        <input name="password" type="password" class="form-control" required 
-               id="password"
-               placeholder="At least 8 characters"
-               minlength="8"
-               pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
-               title="At least 8 characters with letters and numbers">
-        <button type="button" class="password-toggle" onclick="togglePassword()">
-          <i class="bi bi-eye"></i>
-        </button>
-        <div class="invalid-feedback">
-          Password must be at least 8 characters with letters and numbers
-        </div>
-      </div>
-      
-      <!-- Confirm Password -->
-      <div class="mb-3">
-        <label class="form-label">Confirm Password</label>
-        <input name="confirm_password" type="password" class="form-control" required
-               id="confirmPassword"
-               placeholder="Re-enter your password">
-        <div class="invalid-feedback">
-          Passwords do not match
-        </div>
-      </div>
-      
-      <!-- Teacher Option -->
-      <div class="mb-3 form-check">
-        <input name="is_teacher" type="checkbox" class="form-check-input" id="teachCheck">
-        <label class="form-check-label" for="teachCheck">
-          <i class="bi bi-person-badge me-1"></i>I'm a teacher
-        </label>
-      </div>
-      
-      <!-- Class Name (appears when teacher is checked) -->
-      <div class="mb-3 teacher-section" id="teacherSection" style="display: none;">
-        <label class="form-label">
-          Class Name <span class="optional-label">(Optional)</span>
-        </label>
-        <input name="class_name" class="form-control" 
-               placeholder="e.g., 'Computer Science 101'">
-        <small class="text-muted">Create a class to track student progress</small>
-      </div>
-      
-      <!-- Terms and Conditions -->
-      <div class="mb-3 form-check">
-        <input name="terms" type="checkbox" class="form-check-input" id="termsCheck" required>
-        <label class="form-check-label" for="termsCheck">
-          I agree to the <a href="#" class="text-primary">Terms & Conditions</a> and 
-          <a href="#" class="text-primary">Privacy Policy</a>
-        </label>
-        <div class="invalid-feedback">
-          You must agree to the terms and conditions
-        </div>
-      </div>
-      
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary">
-        <i class="bi bi-person-plus me-2"></i>Create Account
-      </button>
-      
-    </form>
-    
-    <!-- Login Link -->
-    <div class="login-link">
-      Already have an account? 
-      <a href="{{ url_for('login') }}">Login here</a>
-    </div>
-    
-  </div>
-</div>
-
-<script>
-  // Password toggle functionality
-  function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const toggleIcon = document.querySelector('.password-toggle i');
-    
-    if (passwordInput.type === 'password') {
-      passwordInput.type = 'text';
-      toggleIcon.classList.remove('bi-eye');
-      toggleIcon.classList.add('bi-eye-slash');
-    } else {
-      passwordInput.type = 'password';
-      toggleIcon.classList.remove('bi-eye-slash');
-      toggleIcon.classList.add('bi-eye');
-    }
-  }
-  
-  // Show/hide teacher section
-  document.getElementById('teachCheck').addEventListener('change', function() {
-    const teacherSection = document.getElementById('teacherSection');
-    if (this.checked) {
-      teacherSection.style.display = 'block';
-      setTimeout(() => {
-        teacherSection.style.opacity = '1';
-        teacherSection.style.transform = 'translateY(0)';
-      }, 10);
-    } else {
-      teacherSection.style.display = 'none';
-    }
-  });
-  
-  // Form validation
-  document.getElementById('registerForm').addEventListener('submit', function(e) {
-    const form = e.target;
-    
-    // Check password match
-    const password = document.getElementById('password');
-    const confirmPassword = document.getElementById('confirmPassword');
-    
-    if (password.value !== confirmPassword.value) {
-      e.preventDefault();
-      confirmPassword.classList.add('is-invalid');
-      confirmPassword.classList.remove('is-valid');
-      confirmPassword.parentElement.querySelector('.invalid-feedback').textContent = 
-        'Passwords do not match';
-      confirmPassword.focus();
-    } else {
-      confirmPassword.classList.remove('is-invalid');
-      confirmPassword.classList.add('is-valid');
-    }
-    
-    // Validate terms agreement
-    const termsCheck = document.getElementById('termsCheck');
-    if (!termsCheck.checked) {
-      e.preventDefault();
-      termsCheck.classList.add('is-invalid');
-      termsCheck.focus();
-    }
-  });
-  
-  // Real-time validation
-  document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('input', function() {
-      if (this.checkValidity()) {
-        this.classList.remove('is-invalid');
-        this.classList.add('is-valid');
-      } else {
-        this.classList.remove('is-valid');
-        this.classList.add('is-invalid');
-      }
-    });
-  });
-</script>
+</style>
 {% endblock %}

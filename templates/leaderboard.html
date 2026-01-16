@@ -1,0 +1,593 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="text-center">
+                <div class="position-relative d-inline-block mb-4">
+                    <i class="bi bi-trophy-fill display-1 text-warning"></i>
+                    <div class="position-absolute top-0 start-100 translate-middle">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" 
+                             style="width: 40px; height: 40px;">
+                            <i class="bi bi-fire"></i>
+                        </div>
+                    </div>
+                </div>
+                <h1 class="display-4 fw-bold mb-3">🏆 Global Leaderboard</h1>
+                <p class="lead text-muted mb-4">
+                    Top performers compete for glory! Can you make it to the top?
+                </p>
+                
+                <!-- Time Filters -->
+                <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+                    <button class="btn btn-outline-primary active" data-timeframe="all">
+                        <i class="bi bi-calendar-week me-1"></i> All Time
+                    </button>
+                    <button class="btn btn-outline-primary" data-timeframe="monthly">
+                        <i class="bi bi-calendar-month me-1"></i> This Month
+                    </button>
+                    <button class="btn btn-outline-primary" data-timeframe="weekly">
+                        <i class="bi bi-calendar-week me-1"></i> This Week
+                    </button>
+                    <button class="btn btn-outline-primary" data-timeframe="daily">
+                        <i class="bi bi-calendar-day me-1"></i> Today
+                    </button>
+                </div>
+                
+                <!-- User Stats if Logged In -->
+                {% if session.user_id %}
+                    {% for user in users %}
+                        {% if user.username == session.username %}
+                        <div class="card border-primary border-2 shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-center">
+                                            <div class="position-relative me-3">
+                                                {% if user.avatar %}
+                                                    <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
+                                                         alt="{{ user.username }}'s avatar" 
+                                                         class="rounded-circle border border-3 border-primary"
+                                                         style="width: 60px; height: 60px; object-fit: cover;"
+                                                         onerror="this.src='https://ui-avatars.com/api/?name={{ user.username }}&background=667eea&color=fff&size=60'">
+                                                {% else %}
+                                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                         style="width: 60px; height: 60px; font-size: 1.5rem;">
+                                                        {{ user.username[0]|upper }}
+                                                    </div>
+                                                {% endif %}
+                                                <div class="position-absolute top-0 end-0 bg-success border border-2 border-white rounded-circle p-1"></div>
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1">Your Position: <span class="text-primary">#{{ loop.index }}</span></h5>
+                                                <p class="text-muted mb-0">
+                                                    {% if users|length > 0 %}
+                                                        You are in the top {{ ((loop.index / users|length) * 100)|round|int }}% of players!
+                                                    {% else %}
+                                                        Be the first to join the leaderboard!
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="display-6 fw-bold text-primary">{{ user.points }}</div>
+                                                <small class="text-muted">Points</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="display-6 fw-bold text-success">Lvl {{ user.level }}</div>
+                                                <small class="text-muted">Level</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="display-6 fw-bold text-warning">{{ user.streak }} 🔥</div>
+                                                <small class="text-muted">Streak</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3 class="mb-0"><i class="bi bi-trophy me-2"></i>Top Performers</h3>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <span class="badge bg-light text-dark">{{ users|length }} Players</span>
+                            <span class="badge bg-warning ms-2">Live Ranking</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4" style="width: 80px;">Rank</th>
+                                    <th>Player</th>
+                                    <th class="text-center">Level</th>
+                                    <th class="text-center">Points</th>
+                                    <th class="text-center">Streak</th>
+                                    <th class="pe-4 text-center" style="width: 120px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if users %}
+                                    {% for user in users %}
+                                    <tr class="{% if loop.index <= 3 %}table-{{ ['warning', 'secondary', 'info'][loop.index-1] }}{% endif %} {% if user.username == session.username %}table-primary{% endif %}">
+                                        <td class="ps-4">
+                                            <div class="position-relative">
+                                                {% if loop.index == 1 %}
+                                                    <div class="position-absolute top-50 start-0 translate-middle-y">
+                                                        <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center" 
+                                                             style="width: 40px; height: 40px;">
+                                                            <i class="bi bi-trophy-fill fs-5"></i>
+                                                        </div>
+                                                    </div>
+                                                    <span class="ms-5 fw-bold">1st</span>
+                                                {% elif loop.index == 2 %}
+                                                    <div class="position-absolute top-50 start-0 translate-middle-y">
+                                                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                                             style="width: 40px; height: 40px;">
+                                                            <i class="bi bi-award-fill fs-5"></i>
+                                                        </div>
+                                                    </div>
+                                                    <span class="ms-5 fw-bold">2nd</span>
+                                                {% elif loop.index == 3 %}
+                                                    <div class="position-absolute top-50 start-0 translate-middle-y">
+                                                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                                             style="width: 40px; height: 40px;">
+                                                            <i class="bi bi-award fs-5"></i>
+                                                        </div>
+                                                    </div>
+                                                    <span class="ms-5 fw-bold">3rd</span>
+                                                {% else %}
+                                                    <div class="text-center">
+                                                        <span class="badge bg-light text-dark rounded-pill" style="width: 40px;">{{ loop.index }}</span>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="position-relative me-3">
+                                                    {% if user.avatar %}
+                                                        <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
+                                                             alt="{{ user.username }}'s avatar" 
+                                                             class="rounded-circle border border-2 {% if loop.index == 1 %}border-warning{% elif loop.index == 2 %}border-secondary{% elif loop.index == 3 %}border-info{% else %}border-light{% endif %}"
+                                                             style="width: 50px; height: 50px; object-fit: cover;"
+                                                             onerror="this.src='https://ui-avatars.com/api/?name={{ user.username }}&background=667eea&color=fff&size=50'">
+                                                    {% else %}
+                                                        <div class="bg-{% if loop.index == 1 %}warning{% elif loop.index == 2 %}secondary{% elif loop.index == 3 %}info{% else %}primary{% endif %} text-white rounded-circle d-flex align-items-center justify-content-center"
+                                                             style="width: 50px; height: 50px; font-size: 1.25rem;">
+                                                            {{ user.username[0]|upper }}
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if user.streak >= 7 %}
+                                                        <div class="position-absolute top-0 end-0 bg-danger border border-2 border-white rounded-circle d-flex align-items-center justify-content-center" 
+                                                             style="width: 20px; height: 20px;">
+                                                            <i class="bi bi-fire text-white" style="font-size: 0.6rem;"></i>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-0">{{ user.username }}</h6>
+                                                    <small class="text-muted">
+                                                        <i class="bi bi-calendar-check me-1"></i>
+                                                        {{ user.last_active if user.last_active else 'Recently active' }}
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1 mb-1">
+                                                    Level {{ user.level }}
+                                                </span>
+                                                <div class="progress" style="width: 60px; height: 4px;">
+                                                    {% if user.level and user.level is number %}
+                                                        {% set level_progress = ((user.level % 1) * 100) if user.level % 1 else 100 %}
+                                                        <div class="progress-bar bg-success" style="width: level_progress "></div>
+                                                    {% else %}
+                                                        <div class="progress-bar bg-success" style="width: 0%"></div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="display-6 fw-bold text-primary">{{ user.points }}</span>
+                                            <div class="small text-muted">Points</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="fw-bold me-2">{{ user.streak }}</span>
+                                                <i class="bi bi-fire text-danger"></i>
+                                                {% if user.streak >= 10 %}
+                                                    <span class="badge bg-danger ms-1">🔥</span>
+                                                {% elif user.streak >= 5 %}
+                                                    <span class="badge bg-warning ms-1">🔥</span>
+                                                {% endif %}
+                                            </div>
+                                            <small class="text-muted">Day Streak</small>
+                                        </td>
+                                        <td class="pe-4 text-center">
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-outline-primary btn-sm" 
+                                                        data-bs-toggle="tooltip" 
+                                                        title="View Profile">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                {% if session.user_id and user.username != session.username %}
+                                                    <button type="button" class="btn btn-outline-success btn-sm"
+                                                            data-bs-toggle="tooltip" 
+                                                            title="Challenge">
+                                                        <i class="bi bi-send-arrow-up"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="text-center py-5">
+                                            <i class="bi bi-emoji-frown display-1 text-muted mb-3"></i>
+                                            <h4 class="text-muted">No players yet</h4>
+                                            <p class="text-muted">Be the first to join the leaderboard!</p>
+                                            <a href="{{ url_for('register') }}" class="btn btn-primary">
+                                                <i class="bi bi-person-plus me-2"></i>Join Now
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                {% if users %}
+                <div class="card-footer bg-transparent">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Rankings update every 5 minutes • Last updated: Just now
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-chevron-left"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm active">1</button>
+                                <button class="btn btn-outline-secondary btn-sm">2</button>
+                                <button class="btn btn-outline-secondary btn-sm">3</button>
+                                <button class="btn btn-outline-secondary btn-sm">
+                                    <i class="bi bi-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">
+                        <i class="bi bi-bar-chart-fill me-2"></i>Leaderboard Statistics
+                    </h5>
+                    <div class="row g-4">
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-primary mb-1">
+                                    {{ total_points if total_points is defined and total_points is not none else 0 }}
+                                </div>
+                                <small class="text-muted">Total Points Earned</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-success mb-1">
+                                    {% if avg_level is defined and avg_level is not none %}
+                                        {{ avg_level|round(1) }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Average Level</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-warning mb-1">
+                                    {{ max_streak if max_streak is defined and max_streak is not none else 0 }}
+                                </div>
+                                <small class="text-muted">Longest Streak</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="text-center">
+                                <div class="display-5 fw-bold text-info mb-1">
+                                    {{ users|length if users is defined else 0 }}
+                                </div>
+                                <small class="text-muted">Active Players</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex flex-wrap justify-content-center gap-3">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">
+                    <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                </a>
+                <a href="{{ url_for('quiz', subject='Math', difficulty='medium') }}" class="btn btn-success btn-lg px-4">
+                    <i class="bi bi-play-circle me-2"></i>Start New Quiz
+                </a>
+                <button class="btn btn-outline-primary btn-lg px-4" id="shareLeaderboard">
+                    <i class="bi bi-share me-2"></i>Share Leaderboard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .table-hover tbody tr:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .table td, .table th {
+        vertical-align: middle;
+    }
+    
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 500;
+    }
+    
+    .progress {
+        border-radius: 2px;
+    }
+    
+    .btn-group .btn {
+        border-radius: 8px !important;
+        margin: 0 2px;
+    }
+    
+    /* Medal colors for top 3 */
+    .table-warning {
+        background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 193, 7, 0.1) 100%);
+    }
+    
+    .table-secondary {
+        background: linear-gradient(135deg, rgba(108, 117, 125, 0.05) 0%, rgba(108, 117, 125, 0.1) 100%);
+    }
+    
+    .table-info {
+        background: linear-gradient(135deg, rgba(13, 202, 240, 0.05) 0%, rgba(13, 202, 240, 0.1) 100%);
+    }
+    
+    .table-primary {
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0.1) 100%);
+        border-left: 4px solid #0d6efd !important;
+    }
+    
+    /* Highlight current user */
+    .table-primary td:first-child {
+        border-left: 4px solid #0d6efd !important;
+    }
+    
+    /* Animation for rank changes */
+    @keyframes rankUp {
+        0% { background-color: transparent; }
+        50% { background-color: rgba(40, 167, 69, 0.2); }
+        100% { background-color: transparent; }
+    }
+    
+    .rank-up {
+        animation: rankUp 2s ease;
+    }
+    
+    @keyframes rankDown {
+        0% { background-color: transparent; }
+        50% { background-color: rgba(220, 53, 69, 0.2); }
+        100% { background-color: transparent; }
+    }
+    
+    .rank-down {
+        animation: rankDown 2s ease;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Timeframe filter functionality
+    const timeButtons = document.querySelectorAll('[data-timeframe]');
+    timeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const timeframe = this.dataset.timeframe;
+            
+            // Update active button
+            timeButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Here you would typically make an AJAX request to filter data
+            // For now, we'll just show a notification
+            const timeframes = {
+                'all': 'All Time',
+                'monthly': 'This Month',
+                'weekly': 'This Week',
+                'daily': 'Today'
+            };
+            
+            // Show loading state
+            const leaderboardCard = document.querySelector('.animate-fade-in-up');
+            if (leaderboardCard) {
+                leaderboardCard.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    // Show toast notification
+                    showToast(`Showing leaderboard for: ${timeframes[timeframe]}`, 'info');
+                    leaderboardCard.style.opacity = '1';
+                }, 500);
+            }
+        });
+    });
+    
+    // Share leaderboard functionality
+    const shareBtn = document.getElementById('shareLeaderboard');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'LearnQuest Leaderboard',
+                    text: 'Check out the top performers on LearnQuest!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard!', 'success');
+            }
+        });
+    }
+    
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Challenge button functionality
+    document.querySelectorAll('.btn-outline-success').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const row = this.closest('tr');
+            const username = row.querySelector('h6').textContent;
+            showToast(`Challenging ${username}...`, 'info');
+            
+            // In a real app, you would send a challenge request here
+            setTimeout(() => {
+                showToast(`Challenge sent to ${username}!`, 'success');
+            }, 1500);
+        });
+    });
+    
+    // View profile functionality
+    document.querySelectorAll('.btn-outline-primary').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (!this.querySelector('.bi-send-arrow-up')) {
+                const row = this.closest('tr');
+                const username = row.querySelector('h6').textContent;
+                showToast(`Viewing ${username}'s profile...`, 'info');
+                
+                // In a real app, you would navigate to the user's profile
+            }
+        });
+    });
+    
+    // Function to show toast notifications
+    function showToast(message, type = 'info') {
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            createToastContainer();
+            toastContainer = document.querySelector('.toast-container');
+        }
+        
+        const toastId = 'toast-' + Date.now();
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        toastContainer.innerHTML += toastHtml;
+        const toastEl = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        
+        toastEl.addEventListener('hidden.bs.toast', function () {
+            this.remove();
+        });
+    }
+    
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1050';
+        document.body.appendChild(container);
+    }
+    
+    // Add rank change animations (simulated for demo)
+    setTimeout(() => {
+        const rows = document.querySelectorAll('tbody tr');
+        rows.forEach((row, index) => {
+            if (index < 3 && Math.random() > 0.5) {
+                row.classList.add('rank-up');
+            } else if (index > 10 && Math.random() > 0.7) {
+                row.classList.add('rank-down');
+            }
+        });
+    }, 2000);
+});
+</script>
+{% endblock %}

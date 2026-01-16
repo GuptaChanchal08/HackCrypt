@@ -1,0 +1,690 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Quiz Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="mb-0">
+                                <i
+                                    class="bi bi-{% if subject == 'Math' %}calculator{% elif subject == 'Science' %}flask{% elif subject == 'History' %}clock-history{% else %}question-circle{% endif %} me-2"></i>
+                                {{ subject }} Quiz
+                                <span
+                                    class="badge bg-{{ 'success' if difficulty == 'easy' else 'warning' if difficulty == 'medium' else 'danger' }} ms-2">
+                                    {{ difficulty|capitalize }} Level
+                                </span>
+                            </h2>
+                            {% if is_daily %}
+                            <div class="mt-2">
+                                <span class="badge bg-warning text-dark">
+                                    <i class="bi bi-star-fill me-1"></i>Daily Challenge
+                                </span>
+                                <small class="opacity-75 ms-2">Bonus points available!</small>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <div class="d-flex flex-column align-items-md-end">
+                                <div class="mb-2">
+                                    <span
+                                        class="badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+                                        Question <span id="current-question" class="fw-bold">1</span>/{{
+                                        questions|length }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span
+                                        class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                                        Score: <span id="score" class="fw-bold">0</span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div class="card-body py-2 bg-light">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-clock text-primary me-2"></i>
+                                <div class="progress flex-grow-1" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" id="timer-bar" role="progressbar"
+                                        style="width: 100%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="text-muted small">Time remaining: <span id="timer">30:00</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Area -->
+    <div id="quiz-area">
+        {% for question in questions %}
+        <div class="question-card" data-question="{{ loop.index }}" data-answer="{{ question.correct_answer }}">
+            <div class="card border-0 shadow-lg mb-4 animate-fade-in-up">
+                <div class="card-body p-4">
+                    <!-- Question -->
+                    <div class="mb-4">
+                        <div class="d-flex align-items-start mb-3">
+                            <span class="badge bg-primary me-3"
+                                style="width: 40px; height: 40px; line-height: 30px; font-size: 1.1rem;">
+                                Q{{ loop.index }}
+                            </span>
+                            <h3 class="card-title mb-0 flex-grow-1">{{ question.question }}</h3>
+                        </div>
+                        {% if question.hint %}
+                        <div class="alert alert-info d-flex align-items-center mt-3">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <small class="mb-0">{{ question.hint }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Options -->
+                    <div class="row g-3 mb-4">
+                        {% set options = [
+                        ('a', question.option_a),
+                        ('b', question.option_b),
+                        ('c', question.option_c),
+                        ('d', question.option_d)
+                        ] %}
+                        {% for opt, text in options %}
+                        <div class="col-md-6">
+                            <div class="option-card">
+                                <button class="btn btn-outline-primary w-100 text-start p-3 h-100 option-btn"
+                                    data-option="{{ opt }}">
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-primary me-3"
+                                            style="width: 36px; height: 36px; line-height: 24px;">
+                                            {{ opt|upper }}
+                                        </span>
+                                        <span class="flex-grow-1">{{ text }}</span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Feedback Area -->
+                    <div class="feedback-section" style="display: none;">
+                        <div class="alert mb-3 feedback-alert" role="alert"></div>
+
+                        {% if question.explanation %}
+                        <div class="card border-info">
+                            <div class="card-header bg-info bg-opacity-10 text-info">
+                                <i class="bi bi-info-circle me-2"></i>Explanation
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-0">{{ question.explanation }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Fun Facts -->
+                        {% if question.fun_fact %}
+                        <div class="card border-warning mt-3">
+                            <div class="card-header bg-warning bg-opacity-10 text-warning">
+                                <i class="bi bi-lightning-charge me-2"></i>Did You Know?
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-0">{{ question.fun_fact }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="text-center mt-4">
+                            <button class="btn btn-primary btn-lg px-5 next-btn">
+                                {% if loop.index < questions|length %} <i class="bi bi-arrow-right me-2"></i>Next
+                                    Question
+                                    {% else %}
+                                    <i class="bi bi-flag-fill me-2"></i>Finish Quiz
+                                    {% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- Results Section -->
+        <div id="results" style="display: none;">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-success text-white">
+                    <div class="text-center">
+                        <i class="bi bi-trophy-fill display-4 mb-3"></i>
+                        <h2 class="mb-0">Quiz Complete! 🎉</h2>
+                    </div>
+                </div>
+                <div class="card-body p-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10">
+                            <!-- Score Summary -->
+                            <div class="text-center mb-5">
+                                <div class="display-1 fw-bold text-primary mb-3" id="final-score-percentage">0%</div>
+                                <h4 class="mb-3">You scored <span id="final-score" class="fw-bold">0</span> out of {{
+                                    questions|length }}</h4>
+
+                                <!-- Score Circle -->
+                                <div class="position-relative d-inline-block mb-4">
+                                    <svg width="200" height="200" class="score-circle">
+                                        <circle cx="100" cy="100" r="90" fill="none" stroke="#e0e0e0"
+                                            stroke-width="10" />
+                                        <circle cx="100" cy="100" r="90" fill="none" stroke="#667eea" stroke-width="10"
+                                            stroke-dasharray="565.48" stroke-dashoffset="0" id="score-circle" />
+                                    </svg>
+                                    <div class="position-absolute top-50 start-50 translate-middle text-center">
+                                        <div class="display-4 fw-bold" id="score-circle-text">0%</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Stats Grid -->
+                            <div class="row g-4 mb-5">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 bg-primary bg-opacity-10 rounded-3">
+                                        <div class="h1 fw-bold text-primary mb-2" id="points-earned">0</div>
+                                        <small class="text-muted">Points Earned</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 bg-success bg-opacity-10 rounded-3">
+                                        <div class="h1 fw-bold text-success mb-2" id="level-info">1</div>
+                                        <small class="text-muted">Current Level</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 bg-warning bg-opacity-10 rounded-3">
+                                        <div class="h1 fw-bold text-warning mb-2" id="streak-info">0</div>
+                                        <small class="text-muted">Day Streak</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 bg-info bg-opacity-10 rounded-3">
+                                        <div class="h1 fw-bold text-info mb-2" id="time-taken">0s</div>
+                                        <small class="text-muted">Time Taken</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bonuses -->
+                            <div class="bonuses-section mb-5">
+                                <div class="alert alert-warning d-flex align-items-center" id="perfect-bonus"
+                                    style="display: none;">
+                                    <i class="bi bi-star-fill fs-3 me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">🌟 Perfect Score Bonus!</h5>
+                                        <p class="mb-0">You answered all questions correctly! +20 bonus points!</p>
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-info d-flex align-items-center" id="daily-bonus-section"
+                                    style="display: none;">
+                                    <i class="bi bi-calendar-check fs-3 me-3"></i>
+                                    <div>
+                                        <h5 class="mb-1">⭐ Daily Challenge Bonus!</h5>
+                                        <p class="mb-0">You completed the daily challenge! +<span
+                                                id="daily-bonus">0</span> bonus points!</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- New Achievements -->
+                            <div class="new-achievements-section mb-5" id="new-achievements" style="display: none;">
+                                <h4 class="mb-4 text-center"><i class="bi bi-trophy me-2"></i>New Achievements Unlocked!
+                                    🏆</h4>
+                                <div class="row g-3" id="achievements-list"></div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="text-center">
+                                <div class="d-flex flex-wrap justify-content-center gap-3">
+                                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-lg px-4">
+                                        <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                                    </a>
+                                    <a href="{{ url_for('achievements') }}" class="btn btn-success btn-lg px-4">
+                                        <i class="bi bi-award me-2"></i>View Achievements
+                                    </a>
+                                    <a href="{{ url_for('quiz', subject=subject, difficulty=difficulty) }}"
+                                        class="btn btn-outline-primary btn-lg px-4">
+                                        <i class="bi bi-arrow-repeat me-2"></i>Retry Quiz
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Additional CSS -->
+<style>
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .option-card .btn {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        border-width: 2px;
+    }
+
+    .option-card .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .option-card .btn.correct {
+        background-color: #d1e7dd;
+        border-color: #0f5132;
+        color: #0f5132;
+    }
+
+    .option-card .btn.wrong {
+        background-color: #f8d7da;
+        border-color: #842029;
+        color: #842029;
+    }
+
+    .score-circle {
+        transform: rotate(-90deg);
+    }
+
+    .progress-bar {
+        transition: width 1s linear;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+
+    /* Pulse animation for correct answers */
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    .correct {
+        animation: pulse 0.5s ease;
+    }
+
+    /* Fade out animation */
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+        }
+    }
+
+    .question-card.fade-out {
+        animation: fadeOut 0.5s ease-out;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Quiz variables
+        let currentQuestion = 1;
+        let score = 0;
+        const totalQuestions = "{{ questions| length }}";
+        const subject = "{{ subject }}";
+        const difficulty = "{{ difficulty }}";
+        const isDaily = "{{ 'true' if is_daily else 'false' }}";
+        let startTime = Date.now();
+        let timeLeft = 30 * 60; // 30 minutes in seconds
+    let timerInterval;
+
+    // Initialize timer
+    function startTimer() {
+        updateTimerDisplay();
+        timerInterval = setInterval(function () {
+            timeLeft--;
+            updateTimerDisplay();
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        // Update progress bar
+        const percentage = (timeLeft / (30 * 60)) * 100;
+        document.getElementById('timer-bar').style.width = `${percentage}%`;
+
+        // Change color based on time
+        if (timeLeft < 300) { // 5 minutes
+            document.getElementById('timer-bar').classList.remove('bg-primary');
+            document.getElementById('timer-bar').classList.add('bg-danger');
+        } else if (timeLeft < 600) { // 10 minutes
+            document.getElementById('timer-bar').classList.remove('bg-primary');
+            document.getElementById('timer-bar').classList.add('bg-warning');
+        }
+    }
+
+    // Handle option selection
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const questionCard = this.closest('.question-card');
+            const correctAnswer = questionCard.dataset.answer;
+            const selectedAnswer = this.dataset.option;
+            const feedbackSection = questionCard.querySelector('.feedback-section');
+            const feedbackAlert = questionCard.querySelector('.feedback-alert'); // Fixed: using class instead of ID
+            const nextBtn = questionCard.querySelector('.next-btn');
+
+            // Disable all buttons
+            questionCard.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+            // Highlight correct/wrong answers
+            questionCard.querySelectorAll('.option-btn').forEach(optionBtn => {
+                optionBtn.classList.remove('correct', 'wrong');
+                if (optionBtn.dataset.option === correctAnswer) {
+                    optionBtn.classList.add('correct');
+                }
+            });
+
+            // Mark selected answer
+            if (selectedAnswer === correctAnswer) {
+                this.classList.add('correct');
+                feedbackAlert.className = 'alert alert-success d-flex align-items-center';
+                feedbackAlert.innerHTML = `
+                    <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Correct! ✓</h5>
+                        <p class="mb-0">Well done! You earned 10 points for this question.</p>
+                    </div>
+                `;
+                score++;
+            } else {
+                this.classList.add('wrong');
+                feedbackAlert.className = 'alert alert-danger d-flex align-items-center';
+                feedbackAlert.innerHTML = `
+                    <i class="bi bi-x-circle-fill fs-3 me-3"></i>
+                    <div>
+                        <h5 class="mb-1">Incorrect ✗</h5>
+                        <p class="mb-0">The correct answer is highlighted above.</p>
+                    </div>
+                `;
+            }
+
+            // Update score display
+            document.getElementById('score').textContent = score;
+
+            // Show feedback section
+            feedbackSection.style.display = 'block';
+
+            // Scroll to feedback
+            feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Play sound
+            playSound(selectedAnswer === correctAnswer ? 'correct' : 'wrong');
+        });
+    });
+
+    // Handle next question
+    document.querySelectorAll('.next-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const questionCard = this.closest('.question-card');
+
+            // Add fade out animation
+            questionCard.classList.add('fade-out');
+
+            setTimeout(() => {
+                if (currentQuestion < totalQuestions) {
+                    questionCard.style.display = 'none';
+                    currentQuestion++;
+                    const nextCard = document.querySelector(`[data-question="${currentQuestion}"]`);
+                    nextCard.style.display = 'block';
+                    document.getElementById('current-question').textContent = currentQuestion;
+
+                    // Scroll to top of next question
+                    nextCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    submitQuiz();
+                }
+            }, 500);
+        });
+    });
+
+    // Submit quiz
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        const timeTaken = Math.floor((Date.now() - startTime) / 1000);
+
+        // Show loading state
+        document.querySelectorAll('.question-card').forEach(card => card.style.display = 'none');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'text-center py-5';
+        loadingDiv.innerHTML = `
+            <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <h4>Calculating your results...</h4>
+        `;
+        document.getElementById('quiz-area').appendChild(loadingDiv);
+
+        // Send results to server
+        fetch('{{ url_for("submit_quiz") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                score: score,
+                total: totalQuestions,
+                subject: subject,
+                difficulty: difficulty,
+                time_taken: timeTaken,
+                is_daily: isDaily
+            })
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('Network response was not ok');
+                return res.json();
+            })
+            .then(data => {
+                // Remove loading
+                loadingDiv.remove();
+
+                // Show results
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.style.display = 'block';
+
+                // Update results
+                const percentage = Math.round((score / totalQuestions) * 100);
+                document.getElementById('final-score').textContent = score;
+                document.getElementById('final-score-percentage').textContent = `${percentage}%`;
+                document.getElementById('points-earned').textContent = data.points_earned || 0;
+                document.getElementById('level-info').textContent = data.level || 1;
+                document.getElementById('streak-info').textContent = data.streak || 0;
+                document.getElementById('time-taken').textContent = `${Math.floor(timeTaken / 60)}m ${timeTaken % 60}s`;
+
+                // Animate score circle
+                animateScoreCircle(percentage);
+
+                // Show score circle text
+                document.getElementById('score-circle-text').textContent = `${percentage}%`;
+
+                // Show bonuses
+                if (score === totalQuestions) {
+                    document.getElementById('perfect-bonus').style.display = 'flex';
+                }
+                if (data.daily_bonus > 0) {
+                    document.getElementById('daily-bonus').textContent = data.daily_bonus;
+                    document.getElementById('daily-bonus-section').style.display = 'flex';
+                }
+
+                // Show new achievements
+                if (data.new_achievements && data.new_achievements.length > 0) {
+                    const achDiv = document.getElementById('new-achievements');
+                    const achList = document.getElementById('achievements-list');
+
+                    data.new_achievements.forEach((ach, index) => {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-6 col-lg-4';
+                        col.innerHTML = `
+                        <div class="card border-warning h-100 animate-fade-in-up" style="animation-delay: ${index * 0.1}s">
+                            <div class="card-body text-center p-3">
+                                <i class="bi bi-${ach.icon || 'trophy'}-fill display-4 text-warning mb-2"></i>
+                                <h6 class="card-title mb-1">${ach.name}</h6>
+                                <small class="text-muted">${ach.description || 'New achievement unlocked!'}</small>
+                            </div>
+                        </div>
+                    `;
+                        achList.appendChild(col);
+                    });
+
+                    achDiv.style.display = 'block';
+                    achDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Play completion sound
+                playSound('complete');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                loadingDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Error submitting quiz results. Please try again.
+                </div>
+            `;
+            });
+    }
+
+    // Animate score circle
+    function animateScoreCircle(percentage) {
+        const circle = document.getElementById('score-circle');
+        const circumference = 2 * Math.PI * 90;
+        const offset = circumference - (percentage / 100) * circumference;
+
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset = circumference;
+
+        setTimeout(() => {
+            circle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+            circle.style.strokeDashoffset = offset;
+        }, 500);
+    }
+
+    // Sound effects
+    function playSound(type) {
+        if (!window.audioContext) {
+            window.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+
+        const ctx = window.audioContext;
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        switch (type) {
+            case 'correct':
+                oscillator.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+                break;
+            case 'wrong':
+                oscillator.frequency.setValueAtTime(349.23, ctx.currentTime); // F4
+                break;
+            case 'complete':
+                oscillator.frequency.setValueAtTime(659.25, ctx.currentTime); // E5
+                break;
+        }
+
+        gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+
+        oscillator.start();
+        oscillator.stop(ctx.currentTime + 0.5);
+    }
+
+    // Start timer
+    startTimer();
+
+    // Add question navigation
+    addQuestionNavigation();
+
+    function addQuestionNavigation() {
+        const nav = document.createElement('div');
+        nav.className = 'card mt-3';
+        nav.innerHTML = `
+            <div class="card-body">
+                <h6 class="card-title">Question Navigation</h6>
+                <div class="d-flex flex-wrap gap-2" id="question-nav"></div>
+            </div>
+        `;
+
+        document.querySelector('.quiz-header').after(nav);
+
+        for (let i = 1; i <= totalQuestions; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-outline-primary btn-sm';
+            btn.textContent = i;
+            btn.addEventListener('click', () => navigateToQuestion(i));
+            document.getElementById('question-nav').appendChild(btn);
+        }
+    }
+
+    function navigateToQuestion(questionNum) {
+        document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
+        currentQuestion = questionNum;
+        document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'block';
+        document.getElementById('current-question').textContent = currentQuestion;
+    }
+});
+</script>
+{% endblock %}

@@ -1,690 +1,430 @@
-<style>
-    /* Dashboard Page Styles */
+{% extends "base.html" %}
 
-/* Dashboard Container */
-.dashboard-container {
-    animation: fadeIn 0.6s ease-out;
-}
-
-/* Welcome Header */
-h2 {
-    color: #2c3e50;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    position: relative;
-    padding-bottom: 1rem;
-}
-
-h2::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    border-radius: 2px;
-}
-
-/* Welcome Message */
-p.lead {
-    color: #6c757d;
-    font-size: 1.1rem;
-    margin-bottom: 2.5rem;
-    padding: 1rem;
-    background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
-    border-radius: 12px;
-    border-left: 4px solid #667eea;
-}
-
-p.lead strong {
-    color: #2c3e50;
-    font-weight: 700;
-}
-
-/* Section Headers */
-h4 {
-    color: #2d3748;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    position: relative;
-    padding-bottom: 0.75rem;
-    font-size: 1.3rem;
-}
-
-h4::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 40px;
-    height: 3px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    border-radius: 2px;
-}
-
-/* Skills Section */
-.skills-container {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease;
-}
-
-.skills-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-/* Skills List */
-.list-group {
-    border: none;
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-}
-
-.list-group-item {
-    border: none;
-    border-bottom: 1px solid #e2e8f0;
-    padding: 1.25rem 1.5rem;
-    background: #f8fafc;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.list-group-item:hover {
-    background: white;
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.list-group-item:last-child {
-    border-bottom: none;
-}
-
-.list-group-item .skill-name {
-    font-weight: 600;
-    color: #2d3748;
-    font-size: 1.05rem;
-}
-
-/* Skill Badges */
-.badge {
-    padding: 0.6rem 1rem;
-    font-weight: 700;
-    font-size: 0.95rem;
-    border-radius: 10px;
-    min-width: 70px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-.badge.bg-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    border: none;
-    position: relative;
-    overflow: hidden;
-}
-
-.badge.bg-primary::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
-    animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-}
-
-/* Skill Levels Color Coding */
-.badge.skill-level-1 { background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%) !important; color: #c53030; }
-.badge.skill-level-2 { background: linear-gradient(135deg, #feebc8 0%, #fbd38d 100%) !important; color: #b7791f; }
-.badge.skill-level-3 { background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%) !important; color: #276749; }
-.badge.skill-level-4 { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; color: white; }
-
-/* No Skills Message */
-.text-muted {
-    color: #a0aec0 !important;
-    font-style: italic;
-    padding: 2rem;
-    text-align: center;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 2px dashed #e2e8f0;
-}
-
-/* Action Buttons */
-.btn {
-    padding: 0.85rem 1.75rem;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    margin-right: 1rem;
-    margin-bottom: 1rem;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-outline-primary {
-    border: 2px solid #667eea;
-    color: #667eea;
-    background: transparent;
-}
-
-.btn-outline-primary:hover {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-color: transparent;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-}
-
-.btn-outline-secondary {
-    border: 2px solid #cbd5e0;
-    color: #718096;
-    background: transparent;
-}
-
-.btn-outline-secondary:hover {
-    background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
-    border-color: transparent;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(113, 128, 150, 0.3);
-}
-
-/* Badges Section */
-.badges-container {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-    margin-bottom: 2rem;
-    transition: transform 0.3s ease;
-}
-
-.badges-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-/* Badge Cards */
-.badge-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin: 0.75rem;
-    display: inline-block;
-    text-align: center;
-    border: 2px solid transparent;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    min-width: 160px;
-    max-width: 180px;
-    vertical-align: top;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.badge-card:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-    border-color: #667eea;
-}
-
-.badge-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(to right, #667eea, #764ba2);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-}
-
-.badge-card:hover::before {
-    transform: scaleX(1);
-}
-
-.badge-card i {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    display: block;
-}
-
-.badge-card strong {
-    color: #2d3748;
-    font-weight: 700;
-    font-size: 1rem;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.badge-card small {
-    color: #718096;
-    font-size: 0.85rem;
-    line-height: 1.4;
-}
-
-/* Badge Categories */
-.badge-card.gold {
-    border-color: #f6ad55;
-    background: linear-gradient(135deg, #fed7d710 0%, #fbd38d10 100%);
-}
-
-.badge-card.silver {
-    border-color: #cbd5e0;
-    background: linear-gradient(135deg, #edf2f710 0%, #e2e8f010 100%);
-}
-
-.badge-card.bronze {
-    border-color: #ed8936;
-    background: linear-gradient(135deg, #feebc810 0%, #fbd38d10 100%);
-}
-
-/* Teacher Section */
-.teacher-actions {
-    background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-    border-radius: 16px;
-    padding: 2rem;
-    margin-top: 2rem;
-    border-left: 5px solid #667eea;
-}
-
-.teacher-actions h5 {
-    color: #2d3748;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-}
-
-.btn-success {
-    background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
-    border: none;
-    color: white;
-    padding: 0.85rem 2rem;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-success:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(56, 161, 105, 0.3);
-    background-size: 200% 100%;
-    animation: gradientShift 2s ease infinite;
-}
-
-.btn-warning {
-    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
-    border: none;
-    color: white;
-    padding: 0.85rem 2rem;
-    border-radius: 12px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.btn-warning:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(237, 137, 54, 0.3);
-    background-size: 200% 100%;
-    animation: gradientShift 2s ease infinite;
-}
-
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
-/* Divider */
-hr {
-    border: none;
-    height: 2px;
-    background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-    margin: 2.5rem 0;
-}
-
-/* Responsive Design */
-@media (max-width: 992px) {
-    .row {
-        flex-direction: column;
-    }
-    
-    .col-md-6 {
-        width: 100%;
-        margin-bottom: 2.5rem;
-    }
-    
-    .skills-container,
-    .badges-container {
-        padding: 1.5rem;
-    }
-    
-    .badge-card {
-        min-width: 140px;
-        margin: 0.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .dashboard-container {
-        padding: 1rem;
-    }
-    
-    h2 {
-        font-size: 1.5rem;
-    }
-    
-    h4 {
-        font-size: 1.2rem;
-    }
-    
-    .list-group-item {
-        padding: 1rem;
-    }
-    
-    .badge-card {
-        min-width: 120px;
-        padding: 1rem;
-        margin: 0.25rem;
-    }
-    
-    .btn {
-        display: block;
-        width: 100%;
-        margin-bottom: 1rem;
-    }
-}
-
-/* Loading Animation */
-.skeleton {
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-    border-radius: 8px;
-}
-
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-/* Stats Cards */
-.stats-card {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    border: 1px solid #e2e8f0;
-    transition: all 0.3s ease;
-    text-align: center;
-}
-
-.stats-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-}
-
-.stats-card .number {
-    font-size: 2.5rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 0.5rem;
-}
-
-.stats-card .label {
-    color: #718096;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Achievement Animation */
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-.badge-card.new {
-    animation: bounce 0.5s ease 3;
-    border-color: #667eea;
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
-}
-</style>
-{% extends "layout.html" %}
-{% block title %}Dashboard — Study Game{% endblock %}
 {% block content %}
-<div class="dashboard-container">
-    
-    <!-- Welcome Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2>Dashboard</h2>
-            <p class="lead mb-0">
-                Welcome, <strong>{{ user['username'] }}</strong> — 
-                <span class="user-type-badge badge {% if user['is_teacher'] %}bg-warning{% else %}bg-info{% endif %}">
-                    {{ 'Teacher' if user['is_teacher'] else 'Student' }}
-                </span>
-            </p>
-        </div>
-        <div class="stats-card">
-            <div class="number">{{ badges|length }}</div>
-            <div class="label">Badges</div>
-        </div>
-    </div>
-
-    <!-- Quick Stats Row -->
+<div class="container py-4">
+    <!-- Profile Header -->
     <div class="row mb-4">
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="number">{{ perfs|length }}</div>
-                <div class="label">Skills Tracked</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="number">{{ '%.1f' % (perfs|map(attribute='skill')|max|default(0)) }}</div>
-                <div class="label">Top Skill</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="number">{{ '%.1f' % (perfs|map(attribute='skill')|sum / perfs|length if perfs else 0) }}</div>
-                <div class="label">Avg. Skill</div>
-            </div>
-        </div>
-        <div class="col-md-3 col-sm-6 mb-3">
-            <div class="stats-card">
-                <div class="number">{{ perfs|selectattr('skill', '>=', 8)|list|length }}</div>
-                <div class="label">Mastered</div>
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <!-- Avatar and Welcome -->
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <div class="position-relative me-4">
+                                    {% if user.avatar %}
+                                        <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
+                                             alt="{{ session.username }}'s avatar" 
+                                             class="rounded-circle border border-3 border-primary"
+                                             style="width: 80px; height: 80px; object-fit: cover;"
+                                             onerror="this.src='https://ui-avatars.com/api/?name={{ session.username }}&background=667eea&color=fff&size=80'">
+                                    {% else %}
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center"
+                                             style="width: 80px; height: 80px; font-size: 2rem;">
+                                            {{ session.username[0]|upper }}
+                                        </div>
+                                    {% endif %}
+                                    <span class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle p-1"></span>
+                                </div>
+                                <div>
+                                    <h1 class="h2 mb-1">Welcome, {{ session.username }}! 👋</h1>
+                                    <p class="text-muted mb-2">Ready for today's challenge?</p>
+                                    <a href="{{ url_for('profile') }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-person-circle me-1"></i>View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="col-md-6">
+                            <div class="row g-3">
+                                <div class="col-6 col-sm-3">
+                                    <div class="text-center">
+                                        <div class="display-6 fw-bold text-primary">{{ user.points }}</div>
+                                        <small class="text-muted">Points</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="text-center">
+                                        <div class="display-6 fw-bold text-success">Lvl {{ user.level }}</div>
+                                        <small class="text-muted">Level</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="text-center">
+                                        <div class="display-6 fw-bold text-warning">{{ user.streak }} 🔥</div>
+                                        <small class="text-muted">Streak</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="text-center">
+                                        <div class="display-6 fw-bold text-info">{{ user.total_quizzes }}</div>
+                                        <small class="text-muted">Quizzes</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        
-        <!-- Skills Column -->
-        {% set skill_progress = p['skill'] * 10%}
-        <div class="col-md-6">
-            <div class="skills-container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">Your Skills</h4>
-                    <span class="badge bg-secondary">{{ perfs|length }}</span>
+    <!-- Daily Challenge -->
+    <div class="row mb-4">
+        <div class="col-12">
+            {% if not challenge_completed %}
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-star-fill me-2"></i>Daily Challenge</h3>
+                    <span class="badge bg-warning text-dark fs-6">+{{ daily_challenge.bonus_points }} bonus points!</span>
                 </div>
-                
-                {% if perfs %}
-                    <div class="list-group">
-                        {% for p in perfs %}
-                            <li class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <div class="skill-name">{{ p['name'] }}</div>
-                                        <div class="progress mt-2" style="height: 6px; width: 150px;">
-                                            <div class="progress-bar" 
-                                                 role="progressbar" 
-                                                 style="width: skill_progress ; 
-                                                        background: linear-gradient(90deg, #667eea, #764ba2);"
-                                                 aria-valuenow="{{ skill_progress }}" 
-                                                 aria-valuemin="0" 
-                                                 aria-valuemax="100">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="card-title mb-2">{{ daily_challenge.subject }} Quiz</h4>
+                            <p class="card-text mb-3">
+                                Complete today's {{ daily_challenge.difficulty|capitalize }} difficulty quiz to earn extra points!
+                                Test your knowledge in {{ daily_challenge.subject }} and climb the leaderboard.
+                            </p>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-info">{{ daily_challenge.difficulty|capitalize }}</span>
+                                <span class="badge bg-secondary">{{ daily_challenge.questions }} questions</span>
+                                <span class="badge bg-success">{{ daily_challenge.time_limit }} min time</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center text-md-end">
+                            <a href="{{ url_for('quiz', subject=daily_challenge.subject, difficulty=daily_challenge.difficulty) }}?daily=true" 
+                               class="btn btn-warning btn-lg px-4 py-3 fw-bold">
+                                <i class="bi bi-trophy me-2"></i>Accept Challenge
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card border-0 shadow-lg animate-fade-in-up border-success">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0"><i class="bi bi-check-circle-fill me-2"></i>Daily Challenge Complete!</h3>
+                    <span class="badge bg-light text-success fs-6">+{{ daily_challenge.bonus_points }} points earned!</span>
+                </div>
+                <div class="card-body text-center py-4">
+                    <i class="bi bi-award-fill display-1 text-success mb-3"></i>
+                    <h4 class="card-title mb-3">Great job! You've completed today's challenge!</h4>
+                    <p class="card-text text-muted mb-4">
+                        Come back tomorrow for a new challenge and keep your streak alive!
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <div class="text-center">
+                            <div class="display-5 fw-bold text-success">{{ user.streak }}</div>
+                            <small class="text-muted">Day Streak</small>
+                        </div>
+                        <div class="text-center">
+                            <div class="display-5 fw-bold text-primary">{{ user.points }}</div>
+                            <small class="text-muted">Total Points</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Recent Achievements -->
+    {% if achievements %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm animate-fade-in-up">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0"><i class="bi bi-trophy me-2"></i>Recent Achievements</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-3">
+                        {% for ach in achievements %}
+                        <div class="col">
+                            <div class="text-center p-3 bg-light rounded-3 hover-shadow">
+                                <div class="mb-2">
+                                    <i class="bi bi-{{ ach.achievement_icon }} fs-1 text-warning"></i>
+                                </div>
+                                <h6 class="mb-1">{{ ach.achievement_name }}</h6>
+                                <small class="text-muted">{{ ach.date_earned }}</small>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Choose Your Challenge -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h3 mb-0"><i class="bi bi-compass me-2"></i>Choose Your Challenge</h2>
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-filter me-1"></i>Filter
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">All Subjects</a></li>
+                        <li><a class="dropdown-item" href="#">Mathematics</a></li>
+                        <li><a class="dropdown-item" href="#">Science</a></li>
+                        <li><a class="dropdown-item" href="#">History</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Easy</a></li>
+                        <li><a class="dropdown-item" href="#">Medium</a></li>
+                        <li><a class="dropdown-item" href="#">Hard</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Cards -->
+    <div class="row g-4 mb-5">
+        <!-- Mathematics Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg h-100 animate-fade-in-up">
+                <div class="card-header bg-gradient-primary text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="bi bi-calculator fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="h4 mb-0">Mathematics</h3>
+                            <small class="opacity-75">Numbers, Equations & Logic</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text mb-4">
+                        Test your math skills with various topics from basic arithmetic to advanced calculus.
+                        Perfect your problem-solving abilities!
+                    </p>
+                    <div class="mt-auto">
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-info bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">10</small>
+                                    <small class="text-muted">Quizzes</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-success bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">85%</small>
+                                    <small class="text-muted">Avg Score</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-warning bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">3</small>
+                                    <small class="text-muted">Topics</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('quiz', subject='Math', difficulty='easy') }}" 
+                               class="btn btn-outline-success">Easy</a>
+                            <a href="{{ url_for('quiz', subject='Math', difficulty='medium') }}" 
+                               class="btn btn-outline-warning">Medium</a>
+                            <a href="{{ url_for('quiz', subject='Math', difficulty='hard') }}" 
+                               class="btn btn-outline-danger">Hard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Science Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg h-100 animate-fade-in-up">
+                <div class="card-header bg-gradient-info text-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="bi bi-flask fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="h4 mb-0">Science</h3>
+                            <small class="opacity-75">Biology, Chemistry & Physics</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text mb-4">
+                        Explore the wonders of science. From microscopic organisms to cosmic phenomena, 
+                        challenge your scientific knowledge.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-info bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">8</small>
+                                    <small class="text-muted">Quizzes</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-success bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">78%</small>
+                                    <small class="text-muted">Avg Score</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-warning bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">4</small>
+                                    <small class="text-muted">Topics</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('quiz', subject='Science', difficulty='easy') }}" 
+                               class="btn btn-outline-success">Easy</a>
+                            <a href="{{ url_for('quiz', subject='Science', difficulty='medium') }}" 
+                               class="btn btn-outline-warning">Medium</a>
+                            <a href="{{ url_for('quiz', subject='Science', difficulty='hard') }}" 
+                               class="btn btn-outline-danger">Hard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Card -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card border-0 shadow-lg h-100 animate-fade-in-up">
+                <div class="card-header bg-gradient-warning text-dark">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-dark bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="bi bi-clock-history fs-2"></i>
+                        </div>
+                        <div>
+                            <h3 class="h4 mb-0">History</h3>
+                            <small class="opacity-75">Ancient to Modern Times</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <p class="card-text mb-4">
+                        Journey through time and explore significant historical events, figures, 
+                        and civilizations that shaped our world.
+                    </p>
+                    <div class="mt-auto">
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-info bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">12</small>
+                                    <small class="text-muted">Quizzes</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-success bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">92%</small>
+                                    <small class="text-muted">Avg Score</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center p-2 bg-warning bg-opacity-10 rounded">
+                                    <small class="d-block fw-bold">5</small>
+                                    <small class="text-muted">Eras</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('quiz', subject='History', difficulty='easy') }}" 
+                               class="btn btn-outline-success">Easy</a>
+                            <a href="{{ url_for('quiz', subject='History', difficulty='medium') }}" 
+                               class="btn btn-outline-warning">Medium</a>
+                            <a href="{{ url_for('quiz', subject='History', difficulty='hard') }}" 
+                               class="btn btn-outline-danger">Hard</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Quizzes -->
+    {% if recent_quizzes %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-0 shadow-lg animate-fade-in-up">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Quizzes</h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Subject</th>
+                                    <th>Difficulty</th>
+                                    <th>Score</th>
+                                    <th>Time</th>
+                                    <th class="pe-4">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for quiz in recent_quizzes %}
+                                <tr class="align-middle">
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            {% if quiz.subject == 'Math' %}
+                                                <i class="bi bi-calculator text-primary fs-5 me-3"></i>
+                                            {% elif quiz.subject == 'Science' %}
+                                                <i class="bi bi-flask text-info fs-5 me-3"></i>
+                                            {% elif quiz.subject == 'History' %}
+                                                <i class="bi bi-clock-history text-warning fs-5 me-3"></i>
+                                            {% else %}
+                                                <i class="bi bi-question-circle text-secondary fs-5 me-3"></i>
+                                            {% endif %}
+                                            <div>
+                                                <h6 class="mb-0">{{ quiz.subject }}</h6>
+                                                <small class="text-muted">{{ quiz.topic }}</small>
                                             </div>
                                         </div>
-                                    </div>
-                                    <span class="badge bg-primary rounded-pill skill-level-{{ ((p['skill'] // 2.5)|int) + 1 }}">
-                                        {{ '%.1f' % p['skill'] }}
-                                    </span>
-                                </div>
-                            </li>
-                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if quiz.difficulty == 'easy' %}
+                                            <span class="badge bg-success">{{ quiz.difficulty|capitalize }}</span>
+                                        {% elif quiz.difficulty == 'medium' %}
+                                            <span class="badge bg-warning">{{ quiz.difficulty|capitalize }}</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ quiz.difficulty|capitalize }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 8px;">
+                                                {% set percentage = (quiz.score / quiz.total_questions * 100)|int %}
+                                                <div class="progress-bar 
+                                                    {% if percentage >= 80 %}bg-success
+                                                    {% elif percentage >= 60 %}bg-warning
+                                                    {% else %}bg-danger{% endif %}" 
+                                                     style="width: percentage ">
+                                                </div>
+                                            </div>
+                                            <span class="fw-bold">{{ quiz.score }}/{{ quiz.total_questions }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-clock me-1"></i>
+                                        {{ quiz.time_taken }} min
+                                    </td>
+                                    <td class="pe-4">
+                                        {{ quiz.completed_at }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                    
-                    <div class="mt-4">
-                        <a class="btn btn-outline-primary" href="{{ url_for('leaderboard') }}">
-                            <i class="bi bi-trophy me-2"></i>View Leaderboard
-                        </a>
-                        <a class="btn btn-outline-secondary" href="{{ url_for('recommendations') }}">
-                            <i class="bi bi-lightbulb me-2"></i>Recommendations
-                        </a>
-                    </div>
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-graph-up text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
-                        <p class="text-muted mt-3">No skill data yet. Take a quiz to get started!</p>
-                        <a class="btn btn-primary mt-2" href="{{ url_for('index') }}">
-                            <i class="bi bi-play-circle me-2"></i>Start a Quiz
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Badges Column -->
-        <div class="col-md-6">
-            <div class="badges-container">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">Your Badges</h4>
-                    <span class="badge bg-secondary">{{ badges|length }}</span>
                 </div>
-                
-                {% if badges %}
-                    <div class="text-center">
-                        {% for b in badges %}
-                            <div class="badge-card {{ 'gold' if loop.index <= 2 else 'silver' if loop.index <= 5 else 'bronze' }}">
-                                <i class="bi bi-award"></i>
-                                <strong>{{ b['name'] }}</strong>
-                                <small>{{ b['code'] }}</small>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    
-                    <!-- Badge Progress -->
-                    {% set progress = badges|length * 10 %}
-                    <div class="mt-4">
-                        <div class="d-flex justify-content-between mb-2">
-                            <small>Collection Progress</small>
-                            <small>{{ progress }}%</small>
-                        </div>
-                        <div class="progress" style="height: 8px;">
-                            <div class="progress-bar" 
-                                 role="progressbar" 
-                                 style="width: progress; background: linear-gradient(90deg, #667eea, #764ba2);"
-                    aria-valuenow="{{ progress }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="100">
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="text-center py-5">
-                        <i class="bi bi-award text-muted" style="font-size: 3rem; opacity: 0.3;"></i>
-                        <p class="text-muted mt-3">No badges yet — complete a quiz to earn them!</p>
-                        <a class="btn btn-primary mt-2" href="{{ url_for('index') }}">
-                            <i class="bi bi-trophy me-2"></i>Earn Badges
-                        </a>
-                    </div>
-                {% endif %}
-
-                <hr class="my-4"/>
-                
-                <!-- Teacher Actions -->
-                {% if user['is_teacher'] %}
-                    <div class="teacher-actions">
-                        <h5><i class="bi bi-person-badge me-2"></i>Teacher Tools</h5>
-                        <div class="d-flex flex-wrap gap-2">
-                            <a class="btn btn-success" href="{{ url_for('add_question') }}">
-                                <i class="bi bi-plus-circle me-2"></i>Add Question
-                            </a>
-                            <a class="btn btn-warning" href="{{ url_for('analytics') }}">
-                                <i class="bi bi-bar-chart me-2"></i>Class Analytics
-                            </a>
-                            <a class="btn btn-info" href="#">
-                                <i class="bi bi-people me-2"></i>Manage Students
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
-                
-                <!-- Student Actions -->
-                {% if not user['is_teacher'] %}
-                    <div class="text-center">
-                        <h5 class="mb-3">Ready to learn?</h5>
-                        <a class="btn btn-primary btn-lg" href="{{ url_for('index') }}">
-                            <i class="bi bi-joystick me-2"></i>Start Studying
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Recent Activity -->
-    {% if perfs %}
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="skills-container">
-                <h4>Recent Progress</h4>
-                <div class="row">
-                    {% for p in perfs[:3] %}
-                        <div class="col-md-4 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="me-3">
-                                        <i class="bi bi-graph-up-arrow" style="font-size: 2rem; color: #667eea;"></i>
-                                    </div>
-                                    <div>
-                                        <div class="number">{{ '%.1f' % p['skill'] }}</div>
-                                        <div class="label">{{ p['name'] }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                <div class="card-footer bg-transparent text-center">
+                    <a href="{{ url_for('quiz', subject='Maths', difficulty='medium') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-clock-history me-1"></i>View All Quizzes
+                    </a>
                 </div>
             </div>
         </div>
@@ -692,22 +432,117 @@ hr {
     {% endif %}
 </div>
 
+<!-- Additional CSS -->
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        transition: all 0.3s ease;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    }
+    
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+    }
+    
+    .progress-bar {
+        border-radius: 4px;
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border-bottom: none;
+    }
+    
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table td {
+        vertical-align: middle;
+    }
+    
+    .badge {
+        padding: 0.35em 0.65em;
+        font-weight: 500;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Difficulty badges */
+    .btn-outline-success:hover {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+        color: white !important;
+        border-color: transparent !important;
+    }
+    
+    .btn-outline-warning:hover {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+        color: white !important;
+        border-color: transparent !important;
+    }
+    
+    .btn-outline-danger:hover {
+        background: linear-gradient(135deg, #ff0844 0%, #ffb199 100%) !important;
+        color: white !important;
+        border-color: transparent !important;
+    }
+</style>
+
 <script>
-    // Add bounce animation for new badges
+    // Animate elements on scroll
     document.addEventListener('DOMContentLoaded', function() {
-        const badges = document.querySelectorAll('.badge-card');
-        badges.forEach((badge, index) => {
-            // Simulate new badge animation (in real app, check timestamp)
-            if (index < 2) { // First two badges as "new"
-                badge.classList.add('new');
-            }
+        const animatedElements = document.querySelectorAll('.animate-fade-in-up');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.1
         });
         
-        // Update skill level colors dynamically
-        document.querySelectorAll('.list-group-item .badge').forEach(badge => {
-            const score = parseFloat(badge.textContent);
-            const level = Math.min(4, Math.floor(score / 2.5) + 1);
-            badge.classList.add(`skill-level-${level}`);
+        animatedElements.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });
 </script>
