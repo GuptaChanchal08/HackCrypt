@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Register — Study Game{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <h2>Register</h2>
+    <form method="post">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input name="username" class="form-control" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required>
+      </div>
+      <div class="mb-3 form-check">
+        <input name="is_teacher" type="checkbox" class="form-check-input" id="teachCheck">
+        <label class="form-check-label" for="teachCheck">I'm a teacher</label>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Class name (optional)</label>
+        <input name="class_name" class="form-control">
+      </div>
+      <button class="btn btn-primary">Register</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
