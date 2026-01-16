@@ -164,21 +164,6 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="h3 mb-0"><i class="bi bi-compass me-2"></i>Choose Your Challenge</h2>
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-filter me-1"></i>Filter
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">All Subjects</a></li>
-                        <li><a class="dropdown-item" href="#">Mathematics</a></li>
-                        <li><a class="dropdown-item" href="#">Science</a></li>
-                        <li><a class="dropdown-item" href="#">History</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Easy</a></li>
-                        <li><a class="dropdown-item" href="#">Medium</a></li>
-                        <li><a class="dropdown-item" href="#">Hard</a></li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
@@ -420,11 +405,6 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="card-footer bg-transparent text-center">
-                    <a href="{{ url_for('quiz', subject='Maths', difficulty='medium') }}" class="btn btn-outline-primary">
-                        <i class="bi bi-clock-history me-1"></i>View All Quizzes
-                    </a>
                 </div>
             </div>
         </div>

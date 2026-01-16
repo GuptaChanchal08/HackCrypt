@@ -24,6 +24,15 @@
                     </div>
                     {% endif %}
 
+                    <!-- Success Message (for registration redirect) -->
+                    {% if success %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        {{ success }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endif %}
+
                     <!-- Registration Form -->
                     <form method="POST" id="registerForm">
                         <!-- Username Field -->
@@ -47,6 +56,27 @@
                                 <div class="invalid-feedback">Please choose a username.</div>
                             </div>
                             <div class="form-text">This will be your unique identifier</div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold">
+                                <i class="bi bi-envelope me-1"></i>Email Address
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-primary text-white">
+                                    <i class="bi bi-envelope-at"></i>
+                                </span>
+                                <input type="email" 
+                                       class="form-control" 
+                                       id="email" 
+                                       name="email" 
+                                       placeholder="Enter your email"
+                                       required>
+                                <div class="valid-feedback">Looks good!</div>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                            </div>
+                            <div class="form-text">We'll never share your email with anyone</div>
                         </div>
 
                         <!-- Password Field -->
@@ -138,101 +168,6 @@
                             </div>
                         </div>
 
-                        <!-- Teacher Checkbox -->
-                        <div class="mb-4">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="is_teacher" name="is_teacher">
-                                <label class="form-check-label fw-semibold" for="is_teacher">
-                                    <i class="bi bi-mortarboard-fill me-2"></i>I am a teacher/instructor
-                                </label>
-                            </div>
-                            <div class="form-text ms-4">
-                                Check this if you want to create and manage quizzes
-                            </div>
-                        </div>
-
-                        <!-- Avatar Selection (Conditional) -->
-                        <div class="mb-4" id="avatarSection">
-                            <div class="card border-primary">
-                                <div class="card-header bg-primary text-white">
-                                    <i class="bi bi-person-circle me-2"></i>Choose Your Avatar
-                                </div>
-                                <div class="card-body">
-                                    <p class="text-muted mb-3">Select an avatar that represents you in the game</p>
-                                    
-                                    <div class="row g-3">
-                                        <!-- Avatar 1 -->
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="avatar-option">
-                                                <input type="radio" class="btn-check" name="avatar" id="avatar1" value="avatar1" autocomplete="off" required>
-                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar1">
-                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
-                                                        <img src="{{ url_for('static', filename='avatars/avatar1.png') }}" 
-                                                             alt="Explorer" 
-                                                             class="img-fluid"
-                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI2IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTM1IDcwQzQwIDYwIDYwIDYwIDY1IDcwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz48L3N2Zz4='">
-                                                    </div>
-                                                    <small class="fw-semibold">Explorer</small>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Avatar 2 -->
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="avatar-option">
-                                                <input type="radio" class="btn-check" name="avatar" id="avatar2" value="avatar2" autocomplete="off" required>
-                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar2">
-                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
-                                                        <img src="{{ url_for('static', filename='avatars/avatar2.png') }}" 
-                                                             alt="Scholar" 
-                                                             class="img-fluid"
-                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSI1MCIgZmlsbD0iI2ZhNzA5YSIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI0MCIgcj0iNiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNNDAgNzBDNDUgNjAgNTUgNjAgNjAgNzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik00NSAzNUw1NSA0NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+'">
-                                                    </div>
-                                                    <small class="fw-semibold">Scholar</small>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Avatar 3 -->
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="avatar-option">
-                                                <input type="radio" class="btn-check" name="avatar" id="avatar3" value="avatar3" autocomplete="off" required>
-                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar3">
-                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
-                                                        <img src="{{ url_for('static', filename='avatars/avatar3.png') }}" 
-                                                             alt="Wizard" 
-                                                             class="img-fluid"
-                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9IiM0M2U5N2IiLz48Y2lyY2xlIGN4PSI0MCIgY3k9IjQwIiByPSI2IiBmaWxsPSJ3aGl0ZSIvPjxjaXJjbGUgY3g9IjYwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PHBhdGggZD0iTTM1IDYwQzQwIDU1IDYwIDU1IDY1IDYwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjQiLz48cGF0aCBkPSJNNDAgNzBDNDUgNjUgNTUgNjUgNjAgNzAiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMiIvPjwvc3ZnPg=='">
-                                                    </div>
-                                                    <small class="fw-semibold">Wizard</small>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Avatar 4 -->
-                                        <div class="col-6 col-md-4 col-lg-3">
-                                            <div class="avatar-option">
-                                                <input type="radio" class="btn-check" name="avatar" id="avatar4" value="avatar4" autocomplete="off" required>
-                                                <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center py-3" for="avatar4">
-                                                    <div class="avatar-img mb-2 rounded-circle overflow-hidden" style="width: 40px; height: 40px;">
-                                                        <img src="{{ url_for('static', filename='avatars/avatar4.png') }}" 
-                                                             alt="Warrior" 
-                                                             class="img-fluid"
-                                                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiB4PSIxMCIgeT0iMTAiIHJ4PSIyMCIgZmlsbD0iI2ZmY2MwMCIvPjxjaXJjbGUgY3g9IjQwIiBjeT0iNDAiIHI9IjYiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNjAiIGN5PSI0MCIgcj0iNiIgZmlsbD0id2hpdGUiLz48cGF0aCBkPSJNMzUgNjVDNDAgNjAgNjAgNjAgNjUgNjUiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik01MCA3MEw1MCA1NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9zdmc+'">
-                                                    </div>
-                                                    <small class="fw-semibold">Warrior</small>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="text-center mt-3">
-                                        <small class="text-muted">Click on an avatar to select it</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Terms and Conditions -->
                         <div class="mb-4 form-check">
                             <input type="checkbox" class="form-check-input" id="terms" name="terms" required>
@@ -240,6 +175,14 @@
                                 I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> and <a href="#" class="text-decoration-none">Privacy Policy</a>
                             </label>
                             <div class="invalid-feedback">You must agree before submitting.</div>
+                        </div>
+
+                        <!-- Newsletter Subscription -->
+                        <div class="mb-4 form-check">
+                            <input type="checkbox" class="form-check-input" id="newsletter" name="newsletter">
+                            <label class="form-check-label" for="newsletter">
+                                Subscribe to our newsletter for updates, tips, and exclusive content
+                            </label>
                         </div>
 
                         <!-- Submit Button -->
@@ -293,8 +236,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Elements
-    const teacherCheckbox = document.getElementById('is_teacher');
-    const avatarSection = document.getElementById('avatarSection');
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirm_password');
     const togglePasswordBtn = document.getElementById('togglePassword');
@@ -315,15 +256,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const lowercaseCross = document.getElementById('lowercaseCross');
     const specialCheck = document.getElementById('specialCheck');
     const specialCross = document.getElementById('specialCross');
-    
-    // Avatar requirement elements
-    const avatarInputs = document.querySelectorAll('input[name="avatar"]');
-    
-    // Initialize avatar section visibility
-    updateAvatarSection();
-    
-    // Toggle avatar section based on teacher checkbox
-    teacherCheckbox.addEventListener('change', updateAvatarSection);
     
     // Toggle password visibility
     togglePasswordBtn.addEventListener('click', function() {
@@ -348,21 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', validateForm);
     
     // Functions
-    function updateAvatarSection() {
-        if (teacherCheckbox.checked) {
-            avatarSection.style.display = 'none';
-            avatarInputs.forEach(input => {
-                input.required = false;
-                input.checked = false;
-            });
-        } else {
-            avatarSection.style.display = 'block';
-            avatarInputs.forEach(input => {
-                input.required = true;
-            });
-        }
-    }
-    
     function togglePasswordVisibility(input, icon) {
         const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
         input.setAttribute('type', type);
@@ -469,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Validate password match
         if (passwordInput.value !== confirmPasswordInput.value) {
             event.preventDefault();
-            alert('Please make sure your passwords match.');
+            showToast('Please make sure your passwords match.', 'warning');
             confirmPasswordInput.focus();
             return false;
         }
@@ -478,30 +395,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const strength = parseInt(strengthBar.style.width) || 0;
         if (strength < 50) { // Require at least "Fair" strength
             event.preventDefault();
-            alert('Please use a stronger password. Your password should be at least "Fair" strength.');
+            showToast('Please use a stronger password. Your password should be at least "Fair" strength.', 'warning');
             passwordInput.focus();
             return false;
-        }
-        
-        // Validate avatar selection for non-teachers
-        if (!teacherCheckbox.checked) {
-            let avatarSelected = false;
-            avatarInputs.forEach(input => {
-                if (input.checked) avatarSelected = true;
-            });
-            
-            if (!avatarSelected) {
-                event.preventDefault();
-                alert('Please select an avatar.');
-                return false;
-            }
         }
         
         // Validate terms acceptance
         const termsCheckbox = document.getElementById('terms');
         if (!termsCheckbox.checked) {
             event.preventDefault();
-            alert('You must agree to the Terms of Service and Privacy Policy.');
+            showToast('You must agree to the Terms of Service and Privacy Policy.', 'warning');
             return false;
         }
         
@@ -523,40 +426,56 @@ document.addEventListener('DOMContentLoaded', function() {
             .forEach(function (form) {
                 form.addEventListener('submit', function (event) {
                     if (!form.checkValidity()) {
-                        event.preventDefault()
-                        event.stopPropagation()
+                        event.preventDefault();
+                        event.stopPropagation();
                     }
                     
-                    form.classList.add('was-validated')
-                }, false)
-            })
+                    form.classList.add('was-validated');
+                }, false);
+            });
     })();
+    
+    // Function to show toast notifications
+    function showToast(message, type = 'info') {
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            createToastContainer();
+            toastContainer = document.querySelector('.toast-container');
+        }
+        
+        const toastId = 'toast-' + Date.now();
+        const toastHtml = `
+            <div id="${toastId}" class="toast align-items-center text-bg-${type} border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        `;
+        
+        toastContainer.innerHTML += toastHtml;
+        const toastEl = document.getElementById(toastId);
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+        
+        toastEl.addEventListener('hidden.bs.toast', function () {
+            this.remove();
+        });
+    }
+    
+    function createToastContainer() {
+        const container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1050';
+        document.body.appendChild(container);
+    }
 });
 </script>
 
 <style>
 /* Custom Styles for Registration Form */
-.avatar-option .btn-check:checked + .btn {
-    border-color: #0d6efd;
-    background-color: rgba(13, 110, 253, 0.1);
-    transform: scale(1.05);
-    transition: all 0.3s ease;
-}
-
-.avatar-option .btn-check:focus + .btn {
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
-
-.avatar-img {
-    border: 3px solid transparent;
-    transition: border-color 0.3s ease;
-}
-
-.avatar-option .btn-check:checked + .btn .avatar-img {
-    border-color: #0d6efd;
-    box-shadow: 0 0 10px rgba(13, 110, 253, 0.3);
-}
-
 .auth-card {
     border-radius: 20px;
     overflow: hidden;
@@ -616,11 +535,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .avatar-img {
-        width: 60px !important;
-        height: 60px !important;
-    }
-    
     .col-lg-8 {
         padding: 0 15px;
     }
@@ -639,8 +553,17 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .btn-outline-primary:hover {
-    background: linear-gradient(135deg, #1877f2 0%, #0d5dbd 100%);
+    background: linear-gradient(135deg, #1DA1F2 0%, #0d8bdd 100%);
     color: white;
+}
+
+/* Success/Error message styling */
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
 }
 </style>
 {% endblock %}

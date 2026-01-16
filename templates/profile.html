@@ -306,16 +306,6 @@
                         <label for="bio" class="form-label">Bio</label>
                         <textarea class="form-control" id="bio" rows="3" placeholder="Tell us about yourself...">{{ user.bio if user.bio else '' }}</textarea>
                     </div>
-                    <div class="mb-3">
-                        <label for="avatarSelect" class="form-label">Change Avatar</label>
-                        <select class="form-select" id="avatarSelect">
-                            <option value="" {% if not user.avatar %}selected{% endif %}>Default Avatar</option>
-                            <option value="avatar1.png" {% if user.avatar == 'avatar1.png' %}selected{% endif %}>Explorer</option>
-                            <option value="avatar2.png" {% if user.avatar == 'avatar2.png' %}selected{% endif %}>Scholar</option>
-                            <option value="avatar3.png" {% if user.avatar == 'avatar3.png' %}selected{% endif %}>Wizard</option>
-                            <option value="avatar4.png" {% if user.avatar == 'avatar4.png' %}selected{% endif %}>Warrior</option>
-                        </select>
-                    </div>
                 </form>
             </div>
             <div class="modal-footer">
