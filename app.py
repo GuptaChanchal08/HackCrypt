@@ -6,7 +6,7 @@ import os
 import random
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this'
+app.secret_key = 'muschansha'
 
 # Database setup
 def init_db():
