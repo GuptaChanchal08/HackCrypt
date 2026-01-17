@@ -7,27 +7,7 @@
             <div class="card border-0 shadow-lg animate-fade-in-up">
                 <div class="card-body p-5">
                     <div class="row align-items-center">
-                        <!-- Avatar Section -->
-                        <div class="col-lg-4 text-center text-lg-start mb-4 mb-lg-0">
-                            <div class="position-relative d-inline-block">
-                                {% if user.avatar %}
-                                    <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" 
-                                         alt="{{ user.username }}'s avatar" 
-                                         class="rounded-circle border border-4 border-primary shadow-lg"
-                                         style="width: 180px; height: 180px; object-fit: cover;"
-                                         onerror="this.src='https://ui-avatars.com/api/?name={{ user.username }}&background=667eea&color=fff&size=180'">
-                                {% else %}
-                                    <div class="bg-gradient-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-lg"
-                                         style="width: 180px; height: 180px; font-size: 3.5rem;">
-                                        {{ user.username[0]|upper }}
-                                    </div>
-                                {% endif %}
-                                <div class="position-absolute bottom-0 end-0 bg-success border border-4 border-white rounded-circle p-2">
-                                    <i class="bi bi-check-lg"></i>
-                                </div>
-                            </div>
-                        </div>
-                        
+                    
                         <!-- User Info Section -->
                         <div class="col-lg-8">
                             <div class="d-flex flex-column">
